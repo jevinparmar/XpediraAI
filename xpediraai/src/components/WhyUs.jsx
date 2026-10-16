@@ -97,7 +97,6 @@ export default function WhyUs() {
   const scrollTriggerRef = useRef(null);
   const statNumbersRef = useRef([]);
   const [activeStep, setActiveStep] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -138,7 +137,6 @@ export default function WhyUs() {
           anticipatePin: 1,
           scrub: 0.3,
           onUpdate: (self) => {
-            setScrollProgress(self.progress);
             // 4 discrete steps evenly mapped across the pinned scroll:
             // [0.00..0.25) -> Step 0 (01)
             // [0.25..0.50) -> Step 1 (02)
@@ -293,58 +291,6 @@ export default function WhyUs() {
           >
             {/* Left Column: Sticky Title & Step Navigation */}
             <div>
-              {/* Header Tracker with Step Counter & Overall Progress Bar */}
-              <div style={{ marginBottom: '16px' }}>
-                <div
-                  style={{
-                    fontFamily: 'SFMono-Regular, monospace',
-                    fontSize: '0.8rem',
-                    color: 'var(--green)',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span>ARCHITECTURE SHOWCASE</span>
-                    <span style={{ color: 'var(--text-dim)' }}>//</span>
-                    <span style={{ color: '#FFFFFF', fontWeight: 700 }}>
-                      0{activeStep + 1} OF 0{FEATURES.length}
-                    </span>
-                  </div>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--green-soft)' }}>
-                    Scroll to advance
-                  </span>
-                </div>
-
-                {/* Micro Progress Bar */}
-                <div
-                  style={{
-                    width: '100%',
-                    height: '2px',
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    borderRadius: 'var(--radius-pill)',
-                    overflow: 'hidden',
-                    marginTop: '12px',
-                  }}
-                >
-                  <div
-                    style={{
-                      height: '100%',
-                      width: `${Math.min(
-                        100,
-                        Math.max(8, scrollProgress > 0 ? scrollProgress * 100 : ((activeStep + 1) / FEATURES.length) * 100)
-                      )}%`,
-                      background: 'linear-gradient(90deg, var(--green), var(--green-soft))',
-                      boxShadow: '0 0 10px var(--green)',
-                      transition: 'width 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                    }}
-                  />
-                </div>
-              </div>
-
               {/* Dynamic Tagline Title with smooth fade-in */}
               <div
                 key={`tagline-${activeStep}`}
