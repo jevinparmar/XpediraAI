@@ -94,8 +94,10 @@ const FEATURES = [
 export default function WhyUs() {
   const containerRef = useRef(null);
   const pinnedSectionRef = useRef(null);
+  const scrollTriggerRef = useRef(null);
   const statNumbersRef = useRef([]);
   const [activeStep, setActiveStep] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -119,34 +121,71 @@ export default function WhyUs() {
         });
       });
 
-      // 2. Pinned ScrollTrigger section where features swap on scroll
-      const featureCards = gsap.utils.toArray('.why-feature-step');
-      
-      if (featureCards.length > 0 && window.innerWidth >= 900) {
-        ScrollTrigger.create({
+      // 2. Pinned Scroll-Driven Sequence (Desktop / Large Displays)
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 900px)', () => {
+        if (!pinnedSectionRef.current) return;
+
+        // Create pin that locks the section in viewport
+        // Scroll distance: 2.6x screen height gives comfortable scrubbing room for 4 steps
+        const st = ScrollTrigger.create({
           trigger: pinnedSectionRef.current,
-          start: 'top top',
-          end: `+=${featureCards.length * 100}%`,
+          start: 'top 80px',
+          end: () => `+=${window.innerHeight * 2.6}`,
           pin: true,
-          scrub: 0.5,
+          pinSpacing: true,
+          anticipatePin: 1,
+          scrub: 0.3,
           onUpdate: (self) => {
-            const step = Math.min(
-              featureCards.length - 1,
-              Math.floor(self.progress * featureCards.length)
+            setScrollProgress(self.progress);
+            // 4 discrete steps evenly mapped across the pinned scroll:
+            // [0.00..0.25) -> Step 0 (01)
+            // [0.25..0.50) -> Step 1 (02)
+            // [0.50..0.75) -> Step 2 (03)
+            // [0.75..1.00] -> Step 3 (04)
+            const calculatedStep = Math.min(
+              FEATURES.length - 1,
+              Math.max(0, Math.floor(self.progress * FEATURES.length))
             );
-            setActiveStep(step);
+            setActiveStep((prev) => (prev !== calculatedStep ? calculatedStep : prev));
           },
         });
-      }
+
+        scrollTriggerRef.current = st;
+
+        return () => {
+          st.kill();
+          scrollTriggerRef.current = null;
+        };
+      });
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
+  // Handle clicking a specific tab to smoothly scroll to that step in the pinned sequence
+  const handleTabClick = (idx) => {
+    setActiveStep(idx);
+    if (scrollTriggerRef.current) {
+      const st = scrollTriggerRef.current;
+      const targetRatio = (idx + 0.5) / FEATURES.length;
+      const targetScroll = st.start + targetRatio * (st.end - st.start);
+      if (window.lenis) {
+        window.lenis.scrollTo(targetScroll, { duration: 0.9 });
+      } else {
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      }
+    }
+  };
+
+  const currentFeature = FEATURES[activeStep];
+  const IconComponent = currentFeature.icon;
+
   return (
-    <section id="why" ref={containerRef} className="section-padding" style={{ paddingBottom: '80px' }}>
+    <section id="why" ref={containerRef} className="section-padding" style={{ paddingBottom: '60px' }}>
       <div className="section-container">
-        {/* Header */}
+        {/* Section Header */}
         <div style={{ maxWidth: '680px', marginBottom: '56px' }}>
           <div className="section-badge">
             <span className="section-badge-dot" />
@@ -169,7 +208,7 @@ export default function WhyUs() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: '20px',
-            marginBottom: '100px',
+            marginBottom: '80px',
           }}
         >
           {STATS.map((stat, idx) => (
@@ -186,7 +225,8 @@ export default function WhyUs() {
                 backdropFilter: 'blur(24px) saturate(180%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(180%)',
                 border: '1px solid rgba(255, 255, 255, 0.14)',
-                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3)',
+                boxShadow:
+                  '0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3)',
               }}
             >
               <div>
@@ -227,16 +267,18 @@ export default function WhyUs() {
         </div>
       </div>
 
-      {/* Pinned Feature Swap Showcase Section */}
+      {/* Pinned Feature Swap Showcase Section (Scroll Locks Here and Cycles 1 -> 2 -> 3 -> 4) */}
       <div
         ref={pinnedSectionRef}
         className="why-pinned-container"
         style={{
           width: '100%',
-          minHeight: '85vh',
+          minHeight: 'calc(100vh - 80px)',
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'center',
           position: 'relative',
+          padding: '24px 0',
         }}
       >
         <div className="section-container" style={{ width: '100%' }}>
@@ -244,49 +286,95 @@ export default function WhyUs() {
             style={{
               display: 'grid',
               gridTemplateColumns: '1fr',
-              gap: '48px',
+              gap: '44px',
               alignItems: 'center',
             }}
             className="why-pinned-grid"
           >
             {/* Left Column: Sticky Title & Step Navigation */}
             <div>
-              <div
-                style={{
-                  fontFamily: 'SFMono-Regular, monospace',
-                  fontSize: '0.8rem',
-                  color: 'var(--green)',
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  marginBottom: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
-                <span>ARCHITECTURE SHOWCASE</span>
-                <span style={{ color: 'var(--text-dim)' }}>//</span>
-                <span>0{activeStep + 1} OF 0{FEATURES.length}</span>
+              {/* Header Tracker with Step Counter & Overall Progress Bar */}
+              <div style={{ marginBottom: '16px' }}>
+                <div
+                  style={{
+                    fontFamily: 'SFMono-Regular, monospace',
+                    fontSize: '0.8rem',
+                    color: 'var(--green)',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span>ARCHITECTURE SHOWCASE</span>
+                    <span style={{ color: 'var(--text-dim)' }}>//</span>
+                    <span style={{ color: '#FFFFFF', fontWeight: 700 }}>
+                      0{activeStep + 1} OF 0{FEATURES.length}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--green-soft)' }}>
+                    Scroll to advance
+                  </span>
+                </div>
+
+                {/* Micro Progress Bar */}
+                <div
+                  style={{
+                    width: '100%',
+                    height: '2px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: 'var(--radius-pill)',
+                    overflow: 'hidden',
+                    marginTop: '12px',
+                  }}
+                >
+                  <div
+                    style={{
+                      height: '100%',
+                      width: `${Math.min(
+                        100,
+                        Math.max(8, scrollProgress > 0 ? scrollProgress * 100 : ((activeStep + 1) / FEATURES.length) * 100)
+                      )}%`,
+                      background: 'linear-gradient(90deg, var(--green), var(--green-soft))',
+                      boxShadow: '0 0 10px var(--green)',
+                      transition: 'width 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                  />
+                </div>
               </div>
 
-              <h3
+              {/* Dynamic Tagline Title with smooth fade-in */}
+              <div
+                key={`tagline-${activeStep}`}
                 style={{
-                  fontSize: 'clamp(2rem, 3.8vw, 3rem)',
-                  fontWeight: 700,
-                  color: '#EDEDED',
-                  lineHeight: 1.15,
-                  marginBottom: '28px',
+                  minHeight: '84px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  animation: 'whyTitleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                 }}
               >
-                {FEATURES[activeStep].tagline}
-              </h3>
+                <h3
+                  style={{
+                    fontSize: 'clamp(1.85rem, 3.4vw, 2.75rem)',
+                    fontWeight: 700,
+                    color: '#EDEDED',
+                    lineHeight: 1.18,
+                    margin: 0,
+                  }}
+                >
+                  {currentFeature.tagline}
+                </h3>
+              </div>
 
+              {/* 4 Interactive Feature Selector Tabs */}
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '12px',
-                  marginTop: '36px',
+                  marginTop: '32px',
                 }}
               >
                 {FEATURES.map((feat, idx) => {
@@ -294,26 +382,46 @@ export default function WhyUs() {
                   return (
                     <div
                       key={feat.id}
-                      onClick={() => setActiveStep(idx)}
+                      onClick={() => handleTabClick(idx)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Select feature ${feat.title}`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          handleTabClick(idx);
+                        }
+                      }}
                       style={{
                         padding: '14px 20px',
                         borderRadius: 'var(--radius-md)',
                         background: isCurrent
-                          ? 'linear-gradient(135deg, rgba(214, 168, 79, 0.14) 0%, rgba(214, 168, 79, 0.04) 100%)'
-                          : 'rgba(255, 255, 255, 0.04)',
+                          ? 'linear-gradient(135deg, rgba(214, 168, 79, 0.16) 0%, rgba(214, 168, 79, 0.05) 100%)'
+                          : 'rgba(255, 255, 255, 0.035)',
                         backdropFilter: 'blur(16px)',
                         WebkitBackdropFilter: 'blur(16px)',
                         border: isCurrent
-                          ? '1px solid rgba(214, 168, 79, 0.4)'
+                          ? '1px solid rgba(214, 168, 79, 0.45)'
                           : '1px solid rgba(255, 255, 255, 0.08)',
                         boxShadow: isCurrent
-                          ? '0 8px 24px rgba(214, 168, 79, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25)'
+                          ? '0 8px 24px rgba(214, 168, 79, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.25)'
                           : 'none',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         transition: 'all 0.3s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isCurrent) {
+                          e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.3)';
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isCurrent) {
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.035)';
+                        }
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -338,14 +446,26 @@ export default function WhyUs() {
                           {feat.title}
                         </span>
                       </div>
-                      {isCurrent && (
+
+                      {/* Glowing Step Indicator Dot */}
+                      {isCurrent ? (
                         <span
                           style={{
                             width: '8px',
                             height: '8px',
                             borderRadius: '50%',
                             backgroundColor: 'var(--green)',
-                            boxShadow: '0 0 8px var(--green)',
+                            boxShadow: '0 0 10px var(--green)',
+                            animation: 'pulseDot 2s ease-in-out infinite',
+                          }}
+                        />
+                      ) : (
+                        <span
+                          style={{
+                            width: '5px',
+                            height: '5px',
+                            borderRadius: '50%',
+                            backgroundColor: 'rgba(255, 255, 255, 0.2)',
                           }}
                         />
                       )}
@@ -360,15 +480,20 @@ export default function WhyUs() {
               <div
                 className="glass-card"
                 style={{
-                  padding: '44px 36px',
+                  padding: 'clamp(32px, 4vw, 44px)',
                   borderRadius: 'var(--radius-xl)',
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 100%)',
                   backdropFilter: 'blur(32px) saturate(200%)',
                   WebkitBackdropFilter: 'blur(32px) saturate(200%)',
-                  border: '1px solid rgba(214, 168, 79, 0.3)',
-                  boxShadow: '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(214, 168, 79, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.3)',
+                  border: '1px solid rgba(214, 168, 79, 0.35)',
+                  boxShadow:
+                    '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(214, 168, 79, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.3)',
                   position: 'relative',
                   overflow: 'hidden',
+                  minHeight: '440px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
                 }}
               >
                 {/* Background Ambient Glow */}
@@ -377,87 +502,100 @@ export default function WhyUs() {
                     position: 'absolute',
                     top: '-60px',
                     right: '-60px',
-                    width: '200px',
-                    height: '200px',
+                    width: '220px',
+                    height: '220px',
                     borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(214, 168, 79, 0.2) 0%, transparent 70%)',
-                    filter: 'blur(35px)',
+                    background: 'radial-gradient(circle, rgba(214, 168, 79, 0.22) 0%, transparent 70%)',
+                    filter: 'blur(40px)',
                     pointerEvents: 'none',
                   }}
                 />
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                  <div
-                    style={{
-                      width: '56px',
-                      height: '56px',
-                      borderRadius: '16px',
-                      backgroundColor: 'rgba(214, 168, 79, 0.1)',
-                      border: '1px solid rgba(214, 168, 79, 0.3)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--green)',
-                    }}
-                  >
-                    {React.createElement(FEATURES[activeStep].icon, { size: 28 })}
-                  </div>
-
-                  <div>
-                    <span
-                      style={{
-                        fontFamily: 'SFMono-Regular, monospace',
-                        fontSize: '0.75rem',
-                        color: 'var(--green)',
-                        letterSpacing: '0.08em',
-                      }}
-                    >
-                      FEATURE {FEATURES[activeStep].id}
-                    </span>
-                    <h4
-                      style={{
-                        fontSize: '1.5rem',
-                        fontWeight: 700,
-                        color: '#EDEDED',
-                      }}
-                    >
-                      {FEATURES[activeStep].title}
-                    </h4>
-                  </div>
-                </div>
-
-                <p
+                {/* Animated Feature Content Body (Keyed to step for fluid transitions) */}
+                <div
+                  key={`content-${activeStep}`}
                   style={{
-                    fontSize: '1.05rem',
-                    color: 'var(--text-muted)',
-                    lineHeight: 1.7,
-                    marginBottom: '32px',
+                    position: 'relative',
+                    zIndex: 2,
+                    animation: 'whyCardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                   }}
                 >
-                  {FEATURES[activeStep].desc}
-                </p>
-
-                {/* Highlights List */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {FEATURES[activeStep].highlights.map((item, idx) => (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '22px' }}>
                     <div
-                      key={idx}
                       style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '16px',
+                        backgroundColor: 'rgba(214, 168, 79, 0.12)',
+                        border: '1px solid rgba(214, 168, 79, 0.35)',
                         display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: '12px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--green)',
+                        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
                       }}
                     >
-                      <CheckCircle2
-                        size={20}
-                        color="var(--green)"
-                        style={{ flexShrink: 0, marginTop: '2px' }}
-                      />
-                      <span style={{ fontSize: '0.925rem', color: '#EDEDED', lineHeight: 1.5 }}>
-                        {item}
-                      </span>
+                      <IconComponent size={28} />
                     </div>
-                  ))}
+
+                    <div>
+                      <span
+                        style={{
+                          fontFamily: 'SFMono-Regular, monospace',
+                          fontSize: '0.75rem',
+                          color: 'var(--green)',
+                          letterSpacing: '0.08em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        FEATURE {currentFeature.id}
+                      </span>
+                      <h4
+                        style={{
+                          fontSize: 'clamp(1.35rem, 2.5vw, 1.65rem)',
+                          fontWeight: 700,
+                          color: '#EDEDED',
+                          marginTop: '2px',
+                        }}
+                      >
+                        {currentFeature.title}
+                      </h4>
+                    </div>
+                  </div>
+
+                  <p
+                    style={{
+                      fontSize: '1.025rem',
+                      color: 'var(--text-muted)',
+                      lineHeight: 1.7,
+                      marginBottom: '32px',
+                    }}
+                  >
+                    {currentFeature.desc}
+                  </p>
+
+                  {/* Highlights List */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {currentFeature.highlights.map((item, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '12px',
+                        }}
+                      >
+                        <CheckCircle2
+                          size={20}
+                          color="var(--green)"
+                          style={{ flexShrink: 0, marginTop: '2px' }}
+                        />
+                        <span style={{ fontSize: '0.925rem', color: '#EDEDED', lineHeight: 1.5 }}>
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -466,9 +604,31 @@ export default function WhyUs() {
       </div>
 
       <style>{`
+        @keyframes whyCardIn {
+          0% {
+            opacity: 0.25;
+            transform: translateY(14px) scale(0.985);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes whyTitleIn {
+          0% {
+            opacity: 0.25;
+            transform: translateY(8px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
         @media (min-width: 900px) {
           .why-pinned-grid {
-            grid-template-columns: 1fr 1.1fr !important;
+            grid-template-columns: 1fr 1.15fr !important;
           }
         }
       `}</style>
