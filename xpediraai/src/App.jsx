@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -23,40 +24,69 @@ export default function App() {
   const mainRef = useRef(null);
 
   useEffect(() => {
-    // Initialize Lenis Smooth Scroll
+    // Initialize Lenis Smooth Scroll with fine-tuned friction and momentum
     const lenisInstance = new Lenis({
-      duration: 1.2,
+      duration: 1.25,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 0.9,
+      wheelMultiplier: 1.0,
       touchMultiplier: 1.5,
+      infinite: false,
     });
 
     lenisRef.current = lenisInstance;
+    window.lenis = lenisInstance;
 
-    // Synchronize Lenis with GSAP ScrollTrigger
+    // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
     lenisInstance.on('scroll', ScrollTrigger.update);
 
-    const updateRaf = (time) => {
+    // Drive Lenis RAF through GSAP's ticker for lockstep synchronization
+    const updateTicker = (time) => {
       lenisInstance.raf(time * 1000);
     };
 
-    gsap.ticker.add(updateRaf);
+    gsap.ticker.add(updateTicker);
     gsap.ticker.lagSmoothing(0);
 
+    // Global anchor link smooth scroll handler for all internal navigation (#)
+    const handleAnchorClick = (e) => {
+      const anchor = e.target.closest('a[href^="#"]');
+      if (!anchor) return;
+      const targetId = anchor.getAttribute('href');
+      if (!targetId || targetId === '#') return;
+
+      const targetEl = document.querySelector(targetId);
+      if (targetEl) {
+        e.preventDefault();
+        lenisInstance.scrollTo(targetEl, {
+          offset: -70,
+          duration: 1.2,
+        });
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+
     return () => {
-      gsap.ticker.remove(updateRaf);
+      document.removeEventListener('click', handleAnchorClick);
+      gsap.ticker.remove(updateTicker);
       lenisInstance.destroy();
       ScrollTrigger.getAll().forEach((t) => t.kill());
+      window.lenis = null;
     };
   }, []);
 
   const handlePreloaderComplete = () => {
     setLoading(false);
-    // Refresh ScrollTrigger calculations once the DOM is revealed
+    // Refresh ScrollTrigger calculations and resize Lenis dimensions once revealed
     setTimeout(() => {
+      if (lenisRef.current) {
+        lenisRef.current.resize();
+      }
       ScrollTrigger.refresh();
-    }, 100);
+    }, 150);
   };
 
   return (

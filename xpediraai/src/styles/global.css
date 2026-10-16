@@ -1,3 +1,4 @@
+@import 'lenis/dist/lenis.css';
 @import './variables.css';
 
 /* ── Reset & Base Styles ── */
@@ -16,7 +17,6 @@ html {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
 body {
@@ -24,7 +24,7 @@ body {
   color: var(--text);
   min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip; /* Clip horizontal overflow without breaking Lenis window scroll */
 }
 
 /* Hide native cursor only on pointer-fine devices */
@@ -220,6 +220,7 @@ body {
   position: relative;
   z-index: 2;
   width: 100%;
+  overflow-x: clip;
 }
 
 .section-container {
