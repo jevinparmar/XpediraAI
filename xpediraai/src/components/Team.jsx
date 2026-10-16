@@ -43,8 +43,17 @@ export default function Team() {
   return (
     <section id="team" ref={containerRef} className="section-padding">
       <div className="section-container">
-        {/* Header */}
-        <div style={{ maxWidth: '680px', marginBottom: '56px' }}>
+        {/* Header (Centered) */}
+        <div
+          style={{
+            maxWidth: '680px',
+            margin: '0 auto 56px auto',
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <div className="section-badge">
             <span className="section-badge-dot" />
             <span>Leadership</span>
@@ -54,18 +63,19 @@ export default function Team() {
             Architect of <span className="text-gradient-green">Applied Intelligence</span>
           </h2>
 
-          <p className="section-subtitle">
+          <p className="section-subtitle" style={{ margin: '0 auto' }}>
             Visionary leadership driving Xpedira AI's mission to engineer high-performance autonomous agents,
             enterprise infrastructure, and next-generation AI systems.
           </p>
         </div>
 
-        {/* CEO Card (Exact Original Card Design) */}
+        {/* CEO Card (Exact Original Card Design Centered) */}
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 360px))',
-            gap: '24px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
           }}
         >
           {TEAM_MEMBERS.map((member, idx) => (
@@ -76,6 +86,8 @@ export default function Team() {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
+                width: '100%',
+                maxWidth: '380px',
                 borderRadius: 'var(--radius-xl)',
                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
                 backdropFilter: 'blur(24px) saturate(180%)',
