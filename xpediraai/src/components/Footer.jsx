@@ -133,8 +133,8 @@ export default function Footer({ lenisRef }) {
                 gap: '8px',
                 padding: '6px 14px',
                 borderRadius: 'var(--radius-pill)',
-                background: 'rgba(0, 255, 136, 0.08)',
-                border: '1px solid rgba(0, 255, 136, 0.25)',
+                background: 'rgba(214, 168, 79, 0.08)',
+                border: '1px solid rgba(214, 168, 79, 0.25)',
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
                 marginTop: '20px',
               }}
@@ -351,10 +351,10 @@ export default function Footer({ lenisRef }) {
                 transition: 'all 0.3s var(--ease-out-expo)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.5)';
+                e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.5)';
                 e.currentTarget.style.color = 'var(--green)';
-                e.currentTarget.style.background = 'rgba(0, 255, 136, 0.08)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 255, 136, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.4)';
+                e.currentTarget.style.background = 'rgba(214, 168, 79, 0.08)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(214, 168, 79, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.4)';
                 e.currentTarget.style.transform = 'translateY(-3px)';
               }}
               onMouseLeave={(e) => {

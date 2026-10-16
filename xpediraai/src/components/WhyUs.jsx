@@ -198,7 +198,7 @@ export default function WhyUs() {
                     fontWeight: 700,
                     letterSpacing: '-0.03em',
                     color: 'var(--green)',
-                    textShadow: '0 0 24px rgba(0, 255, 136, 0.35)',
+                    textShadow: '0 0 24px rgba(214, 168, 79, 0.35)',
                     lineHeight: 1.1,
                     marginBottom: '12px',
                   }}
@@ -299,15 +299,15 @@ export default function WhyUs() {
                         padding: '14px 20px',
                         borderRadius: 'var(--radius-md)',
                         background: isCurrent
-                          ? 'linear-gradient(135deg, rgba(0, 255, 136, 0.14) 0%, rgba(0, 255, 136, 0.04) 100%)'
+                          ? 'linear-gradient(135deg, rgba(214, 168, 79, 0.14) 0%, rgba(214, 168, 79, 0.04) 100%)'
                           : 'rgba(255, 255, 255, 0.04)',
                         backdropFilter: 'blur(16px)',
                         WebkitBackdropFilter: 'blur(16px)',
                         border: isCurrent
-                          ? '1px solid rgba(0, 255, 136, 0.4)'
+                          ? '1px solid rgba(214, 168, 79, 0.4)'
                           : '1px solid rgba(255, 255, 255, 0.08)',
                         boxShadow: isCurrent
-                          ? '0 8px 24px rgba(0, 255, 136, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25)'
+                          ? '0 8px 24px rgba(214, 168, 79, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25)'
                           : 'none',
                         cursor: 'pointer',
                         display: 'flex',
@@ -365,8 +365,8 @@ export default function WhyUs() {
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 100%)',
                   backdropFilter: 'blur(32px) saturate(200%)',
                   WebkitBackdropFilter: 'blur(32px) saturate(200%)',
-                  border: '1px solid rgba(0, 255, 136, 0.3)',
-                  boxShadow: '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(0, 255, 136, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.3)',
+                  border: '1px solid rgba(214, 168, 79, 0.3)',
+                  boxShadow: '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(214, 168, 79, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.3)',
                   position: 'relative',
                   overflow: 'hidden',
                 }}
@@ -380,7 +380,7 @@ export default function WhyUs() {
                     width: '200px',
                     height: '200px',
                     borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(0, 255, 136, 0.2) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(214, 168, 79, 0.2) 0%, transparent 70%)',
                     filter: 'blur(35px)',
                     pointerEvents: 'none',
                   }}
@@ -392,8 +392,8 @@ export default function WhyUs() {
                       width: '56px',
                       height: '56px',
                       borderRadius: '16px',
-                      backgroundColor: 'rgba(0, 255, 136, 0.1)',
-                      border: '1px solid rgba(0, 255, 136, 0.3)',
+                      backgroundColor: 'rgba(214, 168, 79, 0.1)',
+                      border: '1px solid rgba(214, 168, 79, 0.3)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',

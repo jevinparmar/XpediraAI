@@ -113,7 +113,7 @@ export default function Navbar({ lenisRef }) {
           zIndex: 1000,
           padding: isScrolled ? '12px 0' : '22px 0',
           transition: 'padding 0.35s ease, background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease',
-          backgroundColor: isScrolled ? 'rgba(10, 10, 10, 0.70)' : 'rgba(10, 10, 10, 0.25)',
+          backgroundColor: isScrolled ? 'rgba(17, 24, 39, 0.70)' : 'rgba(17, 24, 39, 0.25)',
           backdropFilter: isScrolled ? 'blur(24px) saturate(180%)' : 'blur(12px) saturate(140%)',
           WebkitBackdropFilter: isScrolled ? 'blur(24px) saturate(180%)' : 'blur(12px) saturate(140%)',
           borderBottom: isScrolled ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid rgba(255, 255, 255, 0.05)',
@@ -219,10 +219,10 @@ export default function Navbar({ lenisRef }) {
                     borderRadius: 'var(--radius-pill)',
                     transition: 'all 0.25s ease',
                     background: isActive
-                      ? 'linear-gradient(135deg, rgba(0, 255, 136, 0.14) 0%, rgba(0, 255, 136, 0.04) 100%)'
+                      ? 'linear-gradient(135deg, rgba(214, 168, 79, 0.14) 0%, rgba(214, 168, 79, 0.04) 100%)'
                       : 'transparent',
-                    border: isActive ? '1px solid rgba(0, 255, 136, 0.35)' : '1px solid transparent',
-                    boxShadow: isActive ? '0 0 16px rgba(0, 255, 136, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2)' : 'none',
+                    border: isActive ? '1px solid rgba(214, 168, 79, 0.35)' : '1px solid transparent',
+                    boxShadow: isActive ? '0 0 16px rgba(214, 168, 79, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2)' : 'none',
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
@@ -309,7 +309,7 @@ export default function Navbar({ lenisRef }) {
           position: 'fixed',
           inset: 0,
           zIndex: 999,
-          backgroundColor: 'rgba(10, 10, 10, 0.85)',
+          backgroundColor: 'rgba(17, 24, 39, 0.85)',
           backdropFilter: 'blur(32px) saturate(200%)',
           WebkitBackdropFilter: 'blur(32px) saturate(200%)',
           display: 'flex',

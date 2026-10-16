@@ -85,9 +85,9 @@ export default function Team() {
                 transition: 'all 0.4s var(--ease-out-expo)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.45)';
+                e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.45)';
                 e.currentTarget.style.boxShadow =
-                  '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(0, 255, 136, 0.16), inset 0 1px 1px 0 rgba(255, 255, 255, 0.35)';
+                  '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(214, 168, 79, 0.16), inset 0 1px 1px 0 rgba(255, 255, 255, 0.35)';
                 const img = e.currentTarget.querySelector('.team-avatar-img');
                 if (img) {
                   img.style.filter = 'grayscale(0%) brightness(1.05)';
@@ -136,7 +136,7 @@ export default function Team() {
                     position: 'absolute',
                     inset: 0,
                     background:
-                      'linear-gradient(to top, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0.1) 50%, transparent 100%)',
+                      'linear-gradient(to top, rgba(17, 24, 39, 0.9) 0%, rgba(17, 24, 39, 0.1) 50%, transparent 100%)',
                     pointerEvents: 'none',
                   }}
                 />
@@ -150,10 +150,10 @@ export default function Team() {
                     right: '16px',
                     padding: '6px 14px',
                     borderRadius: 'var(--radius-pill)',
-                    background: 'rgba(10, 10, 10, 0.65)',
+                    background: 'rgba(17, 24, 39, 0.65)',
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(0, 255, 136, 0.3)',
+                    border: '1px solid rgba(214, 168, 79, 0.3)',
                     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
                     display: 'flex',
                     alignItems: 'center',
@@ -249,8 +249,8 @@ export default function Team() {
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.color = 'var(--green)';
-                      e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.4)';
-                      e.currentTarget.style.background = 'rgba(0, 255, 136, 0.08)';
+                      e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.4)';
+                      e.currentTarget.style.background = 'rgba(214, 168, 79, 0.08)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = 'var(--text-muted)';
@@ -279,8 +279,8 @@ export default function Team() {
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.color = 'var(--green)';
-                      e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.4)';
-                      e.currentTarget.style.background = 'rgba(0, 255, 136, 0.08)';
+                      e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.4)';
+                      e.currentTarget.style.background = 'rgba(214, 168, 79, 0.08)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = 'var(--text-muted)';
@@ -309,8 +309,8 @@ export default function Team() {
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.color = 'var(--green)';
-                      e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.4)';
-                      e.currentTarget.style.background = 'rgba(0, 255, 136, 0.08)';
+                      e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.4)';
+                      e.currentTarget.style.background = 'rgba(214, 168, 79, 0.08)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = 'var(--text-muted)';

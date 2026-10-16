@@ -23,7 +23,7 @@ const CORE_TECH_STACK = [
     name: 'Flutter',
     category: 'Cross-Platform Mobile',
     icon: Smartphone,
-    color: '#00FF88',
+    color: '#D6A84F',
     summary:
       'High-performance cross-platform mobile apps for iOS and Android with Dart native compilation, delivering buttery-smooth 60/120 FPS experiences from a single codebase.',
     highlights: ['iOS & Android Native', 'Dart AOT Engine', 'Custom UI Kits', 'Fluid 120 FPS'],
@@ -35,7 +35,7 @@ const CORE_TECH_STACK = [
     name: 'MERN Stack',
     category: 'Full-Stack Web Architecture',
     icon: Globe,
-    color: '#00FF88',
+    color: '#D6A84F',
     summary:
       'Robust end-to-end web applications powered by MongoDB, Express.js, React, and Node.js. Built for rapid scaling, high concurrency, and reactive modern user interfaces.',
     highlights: ['MongoDB Atlas', 'Express.js APIs', 'React SPAs & SSR', 'Node.js Runtime'],
@@ -47,7 +47,7 @@ const CORE_TECH_STACK = [
     name: 'WordPress',
     category: 'Enterprise Content Management',
     icon: LayoutTemplate,
-    color: '#00E87D',
+    color: '#E2B964',
     summary:
       'Custom theme and plugin engineering, headless WordPress decoupled architectures with modern frontends, and enterprise-grade WooCommerce solutions built for speed and security.',
     highlights: ['Custom Themes & Plugins', 'Headless REST / GraphQL', 'WooCommerce Scaling', 'SEO Optimized'],
@@ -71,7 +71,7 @@ const CORE_TECH_STACK = [
     name: 'Java',
     category: 'Enterprise Backend & Microservices',
     icon: Coffee,
-    color: '#00FF88',
+    color: '#D6A84F',
     summary:
       'Rock-solid backend foundations built on Java and Spring Boot. High-throughput multithreading, robust security enclaves, and enterprise-grade maintainability.',
     highlights: ['Spring Boot Microservices', 'High-Throughput Concurrency', 'JVM Optimization', 'Zero-Trust Security'],
@@ -83,7 +83,7 @@ const CORE_TECH_STACK = [
     name: 'Python',
     category: 'AI, Data & Intelligent Automation',
     icon: Terminal,
-    color: '#00FF88',
+    color: '#D6A84F',
     summary:
       'Advanced artificial intelligence engines, neural network pipelines, process automation, data engineering, and asynchronous high-throughput REST APIs with FastAPI.',
     highlights: ['Machine Learning & AI', 'FastAPI & Asynchronous', 'Automated Workflows', 'Data Science Pipelines'],
@@ -135,8 +135,8 @@ function Secondary3DOrbit() {
       <mesh>
         <sphereGeometry args={[0.35, 24, 24]} />
         <meshStandardMaterial
-          color="#00FF88"
-          emissive="#00FF88"
+          color="#D6A84F"
+          emissive="#D6A84F"
           emissiveIntensity={2}
           roughness={0.1}
         />
@@ -146,11 +146,11 @@ function Secondary3DOrbit() {
       <group ref={ring1Ref}>
         <mesh rotation={[Math.PI / 4, 0, 0]}>
           <torusGeometry args={[1.1, 0.015, 16, 64]} />
-          <meshStandardMaterial color="#00FF88" emissive="#00FF88" emissiveIntensity={0.8} />
+          <meshStandardMaterial color="#D6A84F" emissive="#D6A84F" emissiveIntensity={0.8} />
         </mesh>
         <mesh position={[1.1, 0, 0]}>
           <sphereGeometry args={[0.07, 16, 16]} />
-          <meshStandardMaterial color="#FFFFFF" emissive="#00FF88" emissiveIntensity={2} />
+          <meshStandardMaterial color="#FFFFFF" emissive="#D6A84F" emissiveIntensity={2} />
         </mesh>
       </group>
 
@@ -158,11 +158,11 @@ function Secondary3DOrbit() {
       <group ref={ring2Ref}>
         <mesh rotation={[-Math.PI / 3, Math.PI / 4, 0]}>
           <torusGeometry args={[1.5, 0.012, 16, 64]} />
-          <meshStandardMaterial color="#EDEDED" emissive="#00FF88" emissiveIntensity={0.4} />
+          <meshStandardMaterial color="#EDEDED" emissive="#D6A84F" emissiveIntensity={0.4} />
         </mesh>
         <mesh position={[-1.5, 0, 0]}>
           <sphereGeometry args={[0.06, 16, 16]} />
-          <meshStandardMaterial color="#00FF88" emissive="#00FF88" emissiveIntensity={2} />
+          <meshStandardMaterial color="#D6A84F" emissive="#D6A84F" emissiveIntensity={2} />
         </mesh>
       </group>
 
@@ -174,7 +174,7 @@ function Secondary3DOrbit() {
         </mesh>
         <mesh position={[0, 1.85, 0]}>
           <sphereGeometry args={[0.05, 16, 16]} />
-          <meshStandardMaterial color="#FFFFFF" emissive="#00FF88" emissiveIntensity={1.5} />
+          <meshStandardMaterial color="#FFFFFF" emissive="#D6A84F" emissiveIntensity={1.5} />
         </mesh>
       </group>
     </group>
@@ -258,9 +258,9 @@ export default function Tech() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-6px)';
-                  e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.45)';
+                  e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.45)';
                   e.currentTarget.style.boxShadow =
-                    '0 24px 50px rgba(0, 0, 0, 0.65), 0 0 30px rgba(0, 255, 136, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.3)';
+                    '0 24px 50px rgba(0, 0, 0, 0.65), 0 0 30px rgba(214, 168, 79, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.3)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
@@ -278,7 +278,7 @@ export default function Tech() {
                     width: '140px',
                     height: '140px',
                     borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(0, 255, 136, 0.15) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(214, 168, 79, 0.15) 0%, transparent 70%)',
                     filter: 'blur(24px)',
                     pointerEvents: 'none',
                   }}
@@ -299,8 +299,8 @@ export default function Tech() {
                         width: '52px',
                         height: '52px',
                         borderRadius: '14px',
-                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
-                        border: '1px solid rgba(0, 255, 136, 0.3)',
+                        backgroundColor: 'rgba(214, 168, 79, 0.1)',
+                        border: '1px solid rgba(214, 168, 79, 0.3)',
                         backdropFilter: 'blur(12px)',
                         display: 'flex',
                         alignItems: 'center',
@@ -320,8 +320,8 @@ export default function Tech() {
                         color: 'var(--green)',
                         padding: '4px 10px',
                         borderRadius: 'var(--radius-pill)',
-                        background: 'rgba(0, 255, 136, 0.08)',
-                        border: '1px solid rgba(0, 255, 136, 0.22)',
+                        background: 'rgba(214, 168, 79, 0.08)',
+                        border: '1px solid rgba(214, 168, 79, 0.22)',
                         letterSpacing: '0.02em',
                       }}
                     >
@@ -482,10 +482,10 @@ export default function Tech() {
                 transition: 'all 0.3s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.45)';
-                e.currentTarget.style.backgroundColor = 'rgba(0, 255, 136, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.45)';
+                e.currentTarget.style.backgroundColor = 'rgba(214, 168, 79, 0.08)';
                 e.currentTarget.style.boxShadow =
-                  '0 6px 20px rgba(0, 255, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
+                  '0 6px 20px rgba(214, 168, 79, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
@@ -566,10 +566,10 @@ export default function Tech() {
                 transition: 'all 0.3s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.45)';
-                e.currentTarget.style.backgroundColor = 'rgba(0, 255, 136, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(214, 168, 79, 0.45)';
+                e.currentTarget.style.backgroundColor = 'rgba(214, 168, 79, 0.08)';
                 e.currentTarget.style.boxShadow =
-                  '0 6px 20px rgba(0, 255, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
+                  '0 6px 20px rgba(214, 168, 79, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
@@ -623,7 +623,7 @@ export default function Tech() {
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%)',
             backdropFilter: 'blur(28px) saturate(180%)',
             WebkitBackdropFilter: 'blur(28px) saturate(180%)',
-            border: '1px solid rgba(0, 255, 136, 0.25)',
+            border: '1px solid rgba(214, 168, 79, 0.25)',
             boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.25)',
             display: 'grid',
             gridTemplateColumns: '1fr',
@@ -641,10 +641,10 @@ export default function Tech() {
                 fontFamily: 'SFMono-Regular, monospace',
                 fontSize: '0.75rem',
                 color: 'var(--green)',
-                background: 'rgba(0, 255, 136, 0.08)',
+                background: 'rgba(214, 168, 79, 0.08)',
                 padding: '4px 12px',
                 borderRadius: 'var(--radius-pill)',
-                border: '1px solid rgba(0, 255, 136, 0.25)',
+                border: '1px solid rgba(214, 168, 79, 0.25)',
                 marginBottom: '18px',
               }}
             >
@@ -736,7 +736,7 @@ export default function Tech() {
               height: '240px',
               borderRadius: '16px',
               overflow: 'hidden',
-              background: 'rgba(10, 10, 10, 0.45)',
+              background: 'rgba(17, 24, 39, 0.45)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
             }}
           >
@@ -747,7 +747,7 @@ export default function Tech() {
             >
               <ambientLight intensity={0.5} />
               <directionalLight position={[4, 4, 3]} intensity={1.5} />
-              <pointLight position={[-3, -3, -2]} color="#00FF88" intensity={2} />
+              <pointLight position={[-3, -3, -2]} color="#D6A84F" intensity={2} />
               <Float speed={2} rotationIntensity={0.6} floatIntensity={0.5}>
                 <Secondary3DOrbit />
               </Float>

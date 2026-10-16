@@ -60,7 +60,7 @@ function AmbientCyberParticles() {
       </bufferGeometry>
       <pointsMaterial
         size={0.038}
-        color="#00FF88"
+        color="#D6A84F"
         transparent
         opacity={0.55}
         blending={THREE.AdditiveBlending}
@@ -95,8 +95,8 @@ function ProceduralNeuralCore() {
         <icosahedronGeometry args={[1.6, 1]} />
         <meshStandardMaterial
           wireframe
-          color="#00FF88"
-          emissive="#00FF88"
+          color="#D6A84F"
+          emissive="#D6A84F"
           emissiveIntensity={0.6}
           roughness={0.2}
           metalness={0.9}
@@ -109,8 +109,8 @@ function ProceduralNeuralCore() {
         <mesh key={idx} position={pos}>
           <sphereGeometry args={[0.045, 12, 12]} />
           <meshStandardMaterial
-            color="#00FF88"
-            emissive="#00FF88"
+            color="#D6A84F"
+            emissive="#D6A84F"
             emissiveIntensity={2.5}
             roughness={0.1}
           />
@@ -120,14 +120,14 @@ function ProceduralNeuralCore() {
       <mesh ref={innerCoreRef}>
         <octahedronGeometry args={[0.85, 0]} />
         <meshPhysicalMaterial
-          color="#111312"
-          emissive="#00FF88"
+          color="#111827"
+          emissive="#D6A84F"
           emissiveIntensity={0.3}
           metalness={0.95}
           roughness={0.15}
         />
       </mesh>
-      <pointLight color="#00FF88" intensity={2.5} distance={3} decay={2} />
+      <pointLight color="#D6A84F" intensity={2.5} distance={3} decay={2} />
     </group>
   );
 }
@@ -152,7 +152,7 @@ function Loader3D() {
   return (
     <mesh>
       <sphereGeometry args={[0.8, 16, 16]} />
-      <meshBasicMaterial color="#00FF88" wireframe />
+      <meshBasicMaterial color="#D6A84F" wireframe />
     </mesh>
   );
 }
@@ -180,12 +180,12 @@ export default function Scene3D() {
         {/* Cinematic Lighting System */}
         <ambientLight intensity={0.75} color="#FFFFFF" />
         <directionalLight position={[5, 6, 5]} intensity={2.2} color="#FFFFFF" />
-        {/* Neon Green Rim Light */}
-        <directionalLight position={[-5, -2, -3]} intensity={4.5} color="#00FF88" />
+        {/* Champagne Gold Rim Light */}
+        <directionalLight position={[-5, -2, -3]} intensity={4.5} color="#D6A84F" />
         {/* Soft Secondary Fill Lights */}
-        <pointLight position={[2, -3, 2]} intensity={1.5} color="#1FD67A" />
+        <pointLight position={[2, -3, 2]} intensity={1.5} color="#E6C275" />
         <pointLight position={[0, 4, 2]} intensity={1.0} color="#FFFFFF" />
-        <pointLight position={[0, -2, 3]} intensity={0.6} color="#00FF88" />
+        <pointLight position={[0, -2, 3]} intensity={0.6} color="#D6A84F" />
 
         <Suspense fallback={<Loader3D />}>
           <InteractiveScene />

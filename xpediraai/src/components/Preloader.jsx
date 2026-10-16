@@ -5,7 +5,7 @@ import gsap from 'gsap';
  * Custom 2-Second Celestial Orbital Comet Preloader
  * Modeled after user reference image:
  * - 4 orbiting comet nodes with tapering curved tails flowing in a circle
- * - Styled to match Xpedira AI's matte-black (#0A0A0A) & glowing neon green (#00FF88) theme
+ * - Styled to match Xpedira AI's royal dark slate (#111827) & champagne gold (#D6A84F) theme
  * - Smooth 2-second loading sequence with a seamless fade-out reveal
  */
 
@@ -63,7 +63,7 @@ export default function Preloader({ onComplete }) {
         position: 'fixed',
         inset: 0,
         zIndex: 100000,
-        backgroundColor: '#0A0A0A',
+        backgroundColor: '#111827',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -79,7 +79,7 @@ export default function Preloader({ onComplete }) {
           width: '380px',
           height: '380px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0, 255, 136, 0.16) 0%, rgba(0, 229, 255, 0.06) 45%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(214, 168, 79, 0.18) 0%, rgba(56, 189, 248, 0.06) 45%, transparent 70%)',
           filter: 'blur(60px)',
           pointerEvents: 'none',
         }}
@@ -95,7 +95,7 @@ export default function Preloader({ onComplete }) {
           zIndex: 10,
         }}
       >
-        {/* Orbital Comet Spinner matching reference image in site green/white */}
+        {/* Orbital Comet Spinner matching reference image in site gold/white */}
         <div
           style={{
             width: '92px',
@@ -120,33 +120,33 @@ export default function Preloader({ onComplete }) {
           >
             <defs>
               <filter id="cometGlow" x="-40%" y="-40%" width="180%" height="180%">
-                <feDropShadow dx="0" dy="0" stdDeviation="3.5" floodColor="#00FF88" floodOpacity="0.95" />
-                <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#00FF88" floodOpacity="0.4" />
+                <feDropShadow dx="0" dy="0" stdDeviation="3.5" floodColor="#D6A84F" floodOpacity="0.95" />
+                <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#D6A84F" floodOpacity="0.4" />
               </filter>
             </defs>
 
-            {/* Comet 1: Leading Brightest Node (Pure White Head + Intense Neon Green Glow) */}
+            {/* Comet 1: Leading Brightest Node (Pure White Head + Intense Champagne Gold Glow) */}
             <g transform="rotate(-66 60 60)">
-              <path d={COMET_TAIL_PATH} fill="#00FF88" fillOpacity="0.95" filter="url(#cometGlow)" />
+              <path d={COMET_TAIL_PATH} fill="#D6A84F" fillOpacity="0.95" filter="url(#cometGlow)" />
               <circle cx="92" cy="60" r="4.6" fill="#FFFFFF" filter="url(#cometGlow)" />
             </g>
 
-            {/* Comet 2: Medium-High Node (Vivid Neon Green, 75% Opacity) */}
+            {/* Comet 2: Medium-High Node (Vivid Gold, 75% Opacity) */}
             <g transform="rotate(24 60 60)">
-              <path d={COMET_TAIL_PATH} fill="#00FF88" fillOpacity="0.75" />
-              <circle cx="92" cy="60" r="4.6" fill="#00FF88" fillOpacity="0.82" />
+              <path d={COMET_TAIL_PATH} fill="#D6A84F" fillOpacity="0.75" />
+              <circle cx="92" cy="60" r="4.6" fill="#D6A84F" fillOpacity="0.82" />
             </g>
 
-            {/* Comet 3: Medium-Low Node (Cyber Mint / Emerald, 48% Opacity) */}
+            {/* Comet 3: Medium-Low Node (Amber Gold, 48% Opacity) */}
             <g transform="rotate(114 60 60)">
-              <path d={COMET_TAIL_PATH} fill="#00FF88" fillOpacity="0.48" />
-              <circle cx="92" cy="60" r="4.6" fill="#00FF88" fillOpacity="0.55" />
+              <path d={COMET_TAIL_PATH} fill="#D6A84F" fillOpacity="0.48" />
+              <circle cx="92" cy="60" r="4.6" fill="#D6A84F" fillOpacity="0.55" />
             </g>
 
-            {/* Comet 4: Trailing Deep Emerald Node (22% Opacity) */}
+            {/* Comet 4: Trailing Deep Bronze Node (22% Opacity) */}
             <g transform="rotate(204 60 60)">
-              <path d={COMET_TAIL_PATH} fill="#00FF88" fillOpacity="0.22" />
-              <circle cx="92" cy="60" r="4.6" fill="#00FF88" fillOpacity="0.28" />
+              <path d={COMET_TAIL_PATH} fill="#D6A84F" fillOpacity="0.22" />
+              <circle cx="92" cy="60" r="4.6" fill="#D6A84F" fillOpacity="0.28" />
             </g>
           </svg>
         </div>

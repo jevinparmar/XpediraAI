@@ -178,8 +178,8 @@ export default function Contact() {
                         width: '36px',
                         height: '36px',
                         borderRadius: '10px',
-                        background: 'rgba(0, 255, 136, 0.1)',
-                        border: '1px solid rgba(0, 255, 136, 0.25)',
+                        background: 'rgba(214, 168, 79, 0.1)',
+                        border: '1px solid rgba(214, 168, 79, 0.25)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -248,8 +248,8 @@ export default function Contact() {
                       width: '36px',
                       height: '36px',
                       borderRadius: '10px',
-                      background: 'rgba(0, 255, 136, 0.1)',
-                      border: '1px solid rgba(0, 255, 136, 0.25)',
+                      background: 'rgba(214, 168, 79, 0.1)',
+                      border: '1px solid rgba(214, 168, 79, 0.25)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -288,8 +288,8 @@ export default function Contact() {
                       width: '36px',
                       height: '36px',
                       borderRadius: '10px',
-                      background: 'rgba(0, 255, 136, 0.1)',
-                      border: '1px solid rgba(0, 255, 136, 0.25)',
+                      background: 'rgba(214, 168, 79, 0.1)',
+                      border: '1px solid rgba(214, 168, 79, 0.25)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -337,7 +337,7 @@ export default function Contact() {
               backdropFilter: 'blur(32px) saturate(200%)',
               WebkitBackdropFilter: 'blur(32px) saturate(200%)',
               border: '1px solid rgba(255, 255, 255, 0.14)',
-              boxShadow: '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(0, 255, 136, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.28)',
+              boxShadow: '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(214, 168, 79, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.28)',
             }}
           >
             <form onSubmit={handleSubmit}>
@@ -485,8 +485,8 @@ export default function Contact() {
                     marginTop: '16px',
                     padding: '12px 16px',
                     borderRadius: 'var(--radius-md)',
-                    background: 'rgba(0, 255, 136, 0.08)',
-                    border: '1px solid rgba(0, 255, 136, 0.3)',
+                    background: 'rgba(214, 168, 79, 0.08)',
+                    border: '1px solid rgba(214, 168, 79, 0.3)',
                     color: 'var(--green)',
                     fontSize: '0.85rem',
                     textAlign: 'center',
@@ -525,8 +525,8 @@ export default function Contact() {
         }
         .form-input:focus {
           border-color: var(--green);
-          background: rgba(0, 255, 136, 0.04);
-          box-shadow: 0 0 16px rgba(0, 255, 136, 0.18);
+          background: rgba(214, 168, 79, 0.04);
+          box-shadow: 0 0 16px rgba(214, 168, 79, 0.18);
         }
         .spin-animation {
           animation: spin 1s linear infinite;

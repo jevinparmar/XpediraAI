@@ -141,7 +141,7 @@ export default function Hero({ lenisRef }) {
                       style={{
                         display: 'inline-block',
                         color: isGreen ? 'var(--green)' : '#EDEDED',
-                        textShadow: isGreen ? '0 0 35px rgba(0, 255, 136, 0.45)' : 'none',
+                        textShadow: isGreen ? '0 0 35px rgba(214, 168, 79, 0.45)' : 'none',
                       }}
                     >
                       {word}
@@ -216,7 +216,7 @@ export default function Hero({ lenisRef }) {
                 width: '460px',
                 height: '460px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 255, 136, 0.22) 0%, rgba(11, 61, 42, 0.12) 50%, transparent 75%)',
+                background: 'radial-gradient(circle, rgba(214, 168, 79, 0.22) 0%, rgba(11, 61, 42, 0.12) 50%, transparent 75%)',
                 filter: 'blur(60px)',
                 pointerEvents: 'none',
               }}

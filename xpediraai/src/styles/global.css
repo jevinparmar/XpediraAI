@@ -36,8 +36,8 @@ body {
 
 /* Selection */
 ::selection {
-  background: var(--green);
-  color: #000000;
+  background: var(--gold);
+  color: #111827;
 }
 
 /* Modern Matte Scrollbar */
@@ -52,7 +52,7 @@ body {
   border-radius: var(--radius-pill);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--green);
+  background: var(--gold);
 }
 
 /* ── Cyber Square Grid Background ── */
@@ -80,31 +80,31 @@ body {
 .cyber-grid-crosses {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(0, 255, 136, 0.22) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(214, 168, 79, 0.28) 1px, transparent 1px);
   background-size: 44px 44px;
   background-position: center center;
-  opacity: 0.65;
+  opacity: 0.70;
 }
 
-/* 3. Interactive Neon Green Cursor Spotlight Grid Layer */
+/* 3. Interactive Champagne Gold Cursor Spotlight Grid Layer */
 .cyber-grid-spotlight {
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(to right, rgba(0, 255, 136, 0.35) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 255, 136, 0.35) 1px, transparent 1px);
+    linear-gradient(to right, rgba(214, 168, 79, 0.38) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(214, 168, 79, 0.38) 1px, transparent 1px);
   background-size: 44px 44px;
   background-position: center center;
   mask-image: radial-gradient(380px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), black 0%, transparent 80%);
   -webkit-mask-image: radial-gradient(380px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), black 0%, transparent 80%);
-  filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.4));
+  filter: drop-shadow(0 0 6px rgba(214, 168, 79, 0.45));
 }
 
 /* 4. Soft Radial Cursor Backlight Wash */
 .cyber-cursor-glow-wash {
   position: absolute;
   inset: 0;
-  background: radial-gradient(420px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(0, 255, 136, 0.07) 0%, rgba(0, 229, 255, 0.02) 40%, transparent 75%);
+  background: radial-gradient(420px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(214, 168, 79, 0.08) 0%, rgba(214, 168, 79, 0.02) 40%, transparent 75%);
 }
 
 /* ── Ambient Background & Matte Noise Overlay ── */
@@ -125,51 +125,51 @@ body {
   pointer-events: none;
 }
 
-/* 1. Primary Neon Emerald Glow */
+/* 1. Primary Warm Champagne Gold Glow */
 .ambient-blob-1 {
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle, rgba(0, 255, 136, 0.22) 0%, rgba(11, 61, 42, 0.15) 55%, transparent 75%);
+  background: radial-gradient(circle, rgba(214, 168, 79, 0.20) 0%, rgba(90, 65, 22, 0.15) 55%, transparent 75%);
   top: -160px;
   right: -120px;
   animation: floatBlob1 22s ease-in-out infinite alternate;
 }
 
-/* 2. Cyber Cyan & Electric Teal Glow */
+/* 2. Midnight Sapphire & Slate Glow */
 .ambient-blob-2 {
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(0, 229, 255, 0.18) 0%, rgba(5, 50, 60, 0.12) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(30, 41, 59, 0.18) 60%, transparent 80%);
   bottom: 25%;
   left: -150px;
   animation: floatBlob2 28s ease-in-out infinite alternate;
 }
 
-/* 3. Deep Forest Jade & Emerald Center */
+/* 3. Deep Bronze & Gold Center */
 .ambient-blob-3 {
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.20) 0%, rgba(5, 22, 14, 0.14) 70%, transparent 80%);
+  background: radial-gradient(circle, rgba(214, 168, 79, 0.16) 0%, rgba(31, 41, 61, 0.14) 70%, transparent 80%);
   top: 42%;
   right: 12%;
   animation: floatBlob3 25s ease-in-out infinite alternate;
 }
 
-/* 4. Vivid Electric Lime & Mint Accent */
+/* 4. Vivid Amber Gold Accent */
 .ambient-blob-4 {
   width: 580px;
   height: 580px;
-  background: radial-gradient(circle, rgba(112, 255, 0, 0.14) 0%, rgba(8, 41, 28, 0.1) 65%, transparent 75%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(45, 26, 8, 0.1) 65%, transparent 75%);
   bottom: -100px;
   right: 25%;
   animation: floatBlob4 32s ease-in-out infinite alternate;
 }
 
-/* 5. Cosmic Indigo Depth Accent */
+/* 5. Cosmic Indigo Slate Depth Accent */
 .ambient-blob-5 {
   width: 450px;
   height: 450px;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.13) 0%, rgba(15, 23, 42, 0.08) 65%, transparent 80%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.10) 0%, rgba(17, 24, 39, 0.15) 65%, transparent 80%);
   top: 15%;
   left: 20%;
   animation: floatBlob5 35s ease-in-out infinite alternate;
@@ -282,9 +282,9 @@ p {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--green);
-  background: rgba(0, 255, 136, 0.08);
-  border: 1px solid rgba(0, 255, 136, 0.30);
+  color: var(--gold);
+  background: rgba(214, 168, 79, 0.10);
+  border: 1px solid rgba(214, 168, 79, 0.35);
   border-radius: var(--radius-pill);
   margin-bottom: 20px;
   backdrop-filter: blur(16px) saturate(180%);
@@ -296,8 +296,8 @@ p {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: var(--green);
-  box-shadow: 0 0 10px var(--green);
+  background-color: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
   animation: pulseDot 2s ease-in-out infinite;
 }
 
@@ -320,14 +320,16 @@ p {
   line-height: 1.65;
 }
 
+.text-gradient-gold,
 .text-gradient-green {
-  background: linear-gradient(135deg, #FFFFFF 30%, var(--green) 100%);
+  background: linear-gradient(135deg, #FFFFFF 30%, var(--gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+.text-gold,
 .text-green {
-  color: var(--green);
+  color: var(--gold);
 }
 
 /* ── Glassmorphism Core Rules ── */
@@ -353,7 +355,7 @@ p {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 45%, rgba(0, 255, 136, 0.3) 70%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 45%, rgba(214, 168, 79, 0.35) 70%, transparent 100%);
   pointer-events: none;
   z-index: 3;
 }
@@ -405,9 +407,9 @@ p {
 }
 
 .glass-pill:hover {
-  border-color: rgba(0, 255, 136, 0.35);
-  background: rgba(0, 255, 136, 0.08);
-  color: var(--green);
+  border-color: rgba(214, 168, 79, 0.35);
+  background: rgba(214, 168, 79, 0.08);
+  color: var(--gold);
 }
 
 /* ── Interactive Buttons & Links ── */
@@ -431,14 +433,14 @@ p {
 }
 
 .btn-primary {
-  background: var(--green);
-  color: #000000;
-  box-shadow: 0 0 24px rgba(0, 255, 136, 0.4), inset 0 1px 1px 0 rgba(255, 255, 255, 0.5);
+  background: var(--gold);
+  color: #111827;
+  box-shadow: 0 0 24px rgba(214, 168, 79, 0.4), inset 0 1px 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .btn-primary:hover {
-  background: var(--green-soft);
-  box-shadow: 0 0 36px rgba(0, 255, 136, 0.65), inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
+  background: var(--gold-soft);
+  box-shadow: 0 0 36px rgba(214, 168, 79, 0.65), inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
 }
 
@@ -452,10 +454,10 @@ p {
 }
 
 .btn-glass:hover {
-  border-color: rgba(0, 255, 136, 0.55);
-  color: var(--green);
-  background: rgba(0, 255, 136, 0.08);
-  box-shadow: 0 10px 32px rgba(0, 255, 136, 0.22), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+  border-color: rgba(214, 168, 79, 0.55);
+  color: var(--gold);
+  background: rgba(214, 168, 79, 0.08);
+  box-shadow: 0 10px 32px rgba(214, 168, 79, 0.22), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
 }
 
@@ -481,9 +483,9 @@ p {
 }
 
 .form-input:focus {
-  border-color: var(--green);
-  background: rgba(0, 255, 136, 0.04);
-  box-shadow: 0 0 0 1px var(--green), 0 0 24px rgba(0, 255, 136, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.25);
+  border-color: var(--gold);
+  background: rgba(214, 168, 79, 0.05);
+  box-shadow: 0 0 0 1px var(--gold), 0 0 24px rgba(214, 168, 79, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .form-label {
@@ -501,7 +503,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
 

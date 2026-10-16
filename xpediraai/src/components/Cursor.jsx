@@ -20,37 +20,37 @@ const GHOST_CONFIG = [
   {
     scale: 0.94,
     restOpacity: 0.84,
-    stroke: '#00FF88',
+    stroke: '#D6A84F',
     strokeWidth: 2.2,
-    fill: 'rgba(0, 255, 136, 0.26)',
-    glow: 'drop-shadow(0 0 6px rgba(0, 255, 136, 0.95)) drop-shadow(0 0 12px rgba(0, 255, 136, 0.5))',
+    fill: 'rgba(214, 168, 79, 0.26)',
+    glow: 'drop-shadow(0 0 6px rgba(214, 168, 79, 0.95)) drop-shadow(0 0 12px rgba(214, 168, 79, 0.5))',
     lerp: 0.44,
   },
   {
     scale: 0.86,
     restOpacity: 0.68,
-    stroke: '#00E87D',
+    stroke: '#E2B964',
     strokeWidth: 1.9,
-    fill: 'rgba(0, 255, 136, 0.20)',
-    glow: 'drop-shadow(0 0 5px rgba(0, 255, 136, 0.80)) drop-shadow(0 0 10px rgba(0, 255, 136, 0.4))',
+    fill: 'rgba(214, 168, 79, 0.20)',
+    glow: 'drop-shadow(0 0 5px rgba(214, 168, 79, 0.80)) drop-shadow(0 0 10px rgba(214, 168, 79, 0.4))',
     lerp: 0.35,
   },
   {
     scale: 0.78,
     restOpacity: 0.52,
-    stroke: '#00D170',
+    stroke: '#C59740',
     strokeWidth: 1.6,
-    fill: 'rgba(0, 255, 136, 0.14)',
-    glow: 'drop-shadow(0 0 4px rgba(0, 255, 136, 0.65)) drop-shadow(0 0 8px rgba(0, 255, 136, 0.3))',
+    fill: 'rgba(214, 168, 79, 0.14)',
+    glow: 'drop-shadow(0 0 4px rgba(214, 168, 79, 0.65)) drop-shadow(0 0 8px rgba(214, 168, 79, 0.3))',
     lerp: 0.27,
   },
   {
     scale: 0.70,
     restOpacity: 0.36,
-    stroke: '#00B863',
+    stroke: '#B38531',
     strokeWidth: 1.3,
-    fill: 'rgba(0, 255, 136, 0.08)',
-    glow: 'drop-shadow(0 0 3px rgba(0, 255, 136, 0.50)) drop-shadow(0 0 6px rgba(0, 255, 136, 0.2))',
+    fill: 'rgba(214, 168, 79, 0.08)',
+    glow: 'drop-shadow(0 0 3px rgba(214, 168, 79, 0.50)) drop-shadow(0 0 6px rgba(214, 168, 79, 0.2))',
     lerp: 0.19,
   },
 ];
@@ -252,13 +252,13 @@ export default function Cursor() {
         <defs>
           <linearGradient id="cursorLeaderStroke" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="75%" stopColor="#F2FFF9" />
-            <stop offset="100%" stopColor="#B3F8DA" />
+            <stop offset="75%" stopColor="#FFFDF7" />
+            <stop offset="100%" stopColor="#F5DFB0" />
           </linearGradient>
           <linearGradient id="cursorLeaderFill" x1="15%" y1="15%" x2="85%" y2="85%">
-            <stop offset="0%" stopColor="rgba(0, 255, 136, 0.22)" />
-            <stop offset="55%" stopColor="rgba(0, 50, 30, 0.40)" />
-            <stop offset="100%" stopColor="rgba(5, 25, 18, 0.55)" />
+            <stop offset="0%" stopColor="rgba(214, 168, 79, 0.25)" />
+            <stop offset="55%" stopColor="rgba(50, 38, 15, 0.40)" />
+            <stop offset="100%" stopColor="rgba(25, 18, 8, 0.55)" />
           </linearGradient>
         </defs>
       </svg>
@@ -302,7 +302,7 @@ export default function Cursor() {
         );
       })}
 
-      {/* Primary Crisp White Arrow with Radiant Neon Emerald Aura */}
+      {/* Primary Crisp White Arrow with Radiant Champagne Gold Aura */}
       <div
         ref={leaderRef}
         style={{
@@ -314,7 +314,7 @@ export default function Cursor() {
           willChange: 'transform',
           pointerEvents: 'none',
           filter:
-            'drop-shadow(0 0 3px #FFFFFF) drop-shadow(0 0 8px #00FF88) drop-shadow(0 0 16px rgba(0, 255, 136, 0.85)) drop-shadow(0 0 26px rgba(0, 255, 136, 0.45))',
+            'drop-shadow(0 0 3px #FFFFFF) drop-shadow(0 0 8px #D6A84F) drop-shadow(0 0 16px rgba(214, 168, 79, 0.85)) drop-shadow(0 0 26px rgba(214, 168, 79, 0.45))',
         }}
       >
         <svg

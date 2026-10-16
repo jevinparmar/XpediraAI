@@ -143,7 +143,7 @@ function ServiceCard({ item }) {
           width: '260px',
           height: '260px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0, 255, 136, 0.20) 0%, rgba(0, 229, 255, 0.08) 40%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(214, 168, 79, 0.20) 0%, rgba(0, 229, 255, 0.08) 40%, transparent 70%)',
           pointerEvents: 'none',
           opacity: 0,
           transition: 'opacity 0.3s ease',
@@ -210,8 +210,8 @@ function ServiceCard({ item }) {
             marginBottom: '12px',
             padding: '4px 12px',
             borderRadius: 'var(--radius-pill)',
-            background: 'rgba(0, 255, 136, 0.08)',
-            border: '1px solid rgba(0, 255, 136, 0.25)',
+            background: 'rgba(214, 168, 79, 0.08)',
+            border: '1px solid rgba(214, 168, 79, 0.25)',
             boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.2)',
           }}
         >

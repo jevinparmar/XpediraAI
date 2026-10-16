@@ -82,34 +82,34 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
         }
 
         if (child.material) {
-          // Glowing neon-green eyes
+          // Glowing champagne gold eyes
           if (
             matName === 'EYES' ||
             matName.toLowerCase().includes('eye') ||
             meshName.toLowerCase().includes('eye')
           ) {
-            child.material.color = new THREE.Color('#00FF88');
-            child.material.emissive = new THREE.Color('#00FF88');
+            child.material.color = new THREE.Color('#D6A84F');
+            child.material.emissive = new THREE.Color('#D6A84F');
             child.material.emissiveIntensity = 3.5;
             child.material.roughness = 0.05;
           }
-          // Screen face: deep obsidian glass
+          // Screen face: deep navy slate glass (#111827)
           else if (
             matName === 'SCREEN' ||
             meshName.toLowerCase().includes('screen') ||
             meshName.toLowerCase().includes('face')
           ) {
-            child.material.color = new THREE.Color('#0A0A0A');
+            child.material.color = new THREE.Color('#111827');
             child.material.metalness = 0.9;
             child.material.roughness = 0.12;
           }
-          // Glow highlights: neon green accent
+          // Glow highlights: champagne gold accent
           else if (
             matName === 'GLOW' ||
             meshName.toLowerCase().includes('glow')
           ) {
-            child.material.color = new THREE.Color('#00FF88');
-            child.material.emissive = new THREE.Color('#00FF88');
+            child.material.color = new THREE.Color('#D6A84F');
+            child.material.emissive = new THREE.Color('#D6A84F');
             child.material.emissiveIntensity = 2.2;
           }
           // Main body: sleek titanium-black cyber finish
