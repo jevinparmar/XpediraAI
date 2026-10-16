@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd xpediraai && npm run build",
+  "outputDirectory": "xpediraai/dist",
+  "installCommand": "cd xpediraai && npm install"
+}
