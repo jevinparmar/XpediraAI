@@ -1,0 +1,10 @@
+{
+  "name": "xpedira-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix xpediraai run dev",
+    "build": "npm --prefix xpediraai run build",
+    "lint": "npm --prefix xpediraai run lint",
+    "preview": "npm --prefix xpediraai run preview"
+  }
+}

@@ -1,0 +1,519 @@
+@import './variables.css';
+
+/* ── Reset & Base Styles ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles smooth scrolling */
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Hide native cursor only on pointer-fine devices */
+@media (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
+/* Selection */
+::selection {
+  background: var(--green);
+  color: #000000;
+}
+
+/* Modern Matte Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green);
+}
+
+/* ── Cyber Square Grid Background ── */
+.cyber-squares-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* 1. Base Subtle Cyber Square Grid (44px x 44px) */
+.cyber-grid-base {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.042) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.042) 1px, transparent 1px);
+  background-size: 44px 44px;
+  background-position: center center;
+  opacity: 0.85;
+}
+
+/* 2. Micro Dot Intersections */
+.cyber-grid-crosses {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0, 255, 136, 0.22) 1px, transparent 1px);
+  background-size: 44px 44px;
+  background-position: center center;
+  opacity: 0.65;
+}
+
+/* 3. Interactive Neon Green Cursor Spotlight Grid Layer */
+.cyber-grid-spotlight {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(0, 255, 136, 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 136, 0.35) 1px, transparent 1px);
+  background-size: 44px 44px;
+  background-position: center center;
+  mask-image: radial-gradient(380px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), black 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(380px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), black 0%, transparent 80%);
+  filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.4));
+}
+
+/* 4. Soft Radial Cursor Backlight Wash */
+.cyber-cursor-glow-wash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(420px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(0, 255, 136, 0.07) 0%, rgba(0, 229, 255, 0.02) 40%, transparent 75%);
+}
+
+/* ── Ambient Background & Matte Noise Overlay ── */
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Floating blurred multi-hue glowing gradient orbs for glass refraction */
+.ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* 1. Primary Neon Emerald Glow */
+.ambient-blob-1 {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(0, 255, 136, 0.22) 0%, rgba(11, 61, 42, 0.15) 55%, transparent 75%);
+  top: -160px;
+  right: -120px;
+  animation: floatBlob1 22s ease-in-out infinite alternate;
+}
+
+/* 2. Cyber Cyan & Electric Teal Glow */
+.ambient-blob-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.18) 0%, rgba(5, 50, 60, 0.12) 60%, transparent 80%);
+  bottom: 25%;
+  left: -150px;
+  animation: floatBlob2 28s ease-in-out infinite alternate;
+}
+
+/* 3. Deep Forest Jade & Emerald Center */
+.ambient-blob-3 {
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.20) 0%, rgba(5, 22, 14, 0.14) 70%, transparent 80%);
+  top: 42%;
+  right: 12%;
+  animation: floatBlob3 25s ease-in-out infinite alternate;
+}
+
+/* 4. Vivid Electric Lime & Mint Accent */
+.ambient-blob-4 {
+  width: 580px;
+  height: 580px;
+  background: radial-gradient(circle, rgba(112, 255, 0, 0.14) 0%, rgba(8, 41, 28, 0.1) 65%, transparent 75%);
+  bottom: -100px;
+  right: 25%;
+  animation: floatBlob4 32s ease-in-out infinite alternate;
+}
+
+/* 5. Cosmic Indigo Depth Accent */
+.ambient-blob-5 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.13) 0%, rgba(15, 23, 42, 0.08) 65%, transparent 80%);
+  top: 15%;
+  left: 20%;
+  animation: floatBlob5 35s ease-in-out infinite alternate;
+}
+
+@keyframes floatBlob1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-90px, 110px) scale(1.12); }
+  100% { transform: translate(70px, -50px) scale(0.94); }
+}
+
+@keyframes floatBlob2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(110px, -90px) scale(1.18); }
+  100% { transform: translate(-60px, 80px) scale(0.88); }
+}
+
+@keyframes floatBlob3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-80px, -70px) scale(1.08); }
+  100% { transform: translate(60px, 100px) scale(0.92); }
+}
+
+@keyframes floatBlob4 {
+  0% { transform: translate(0, 0) scale(0.95); }
+  50% { transform: translate(-100px, -80px) scale(1.15); }
+  100% { transform: translate(80px, -40px) scale(1.02); }
+}
+
+@keyframes floatBlob5 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(70px, 90px) scale(1.1); }
+  100% { transform: translate(-80px, 40px) scale(0.9); }
+}
+
+/* Subtle Film Grain Noise (SVG base64 overlay ~3.5% opacity) */
+.matte-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* ── Layout & Container ── */
+.app-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.section-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+@media (min-width: 768px) {
+  .section-container {
+    padding: 0 40px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-container {
+    padding: 0 48px;
+  }
+}
+
+.section-padding {
+  padding: 120px 0;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 80px 0;
+  }
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+p {
+  color: var(--text-muted);
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.font-mono {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+/* Section Header Typography */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.30);
+  border-radius: var(--radius-pill);
+  margin-bottom: 20px;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 1px 0 rgba(255, 255, 255, 0.30);
+}
+
+.section-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+
+.section-title {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 700;
+  margin-bottom: 20px;
+  letter-spacing: -0.03em;
+}
+
+.section-subtitle {
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  color: var(--text-muted);
+  max-width: 640px;
+  line-height: 1.65;
+}
+
+.text-gradient-green {
+  background: linear-gradient(135deg, #FFFFFF 30%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-green {
+  color: var(--green);
+}
+
+/* ── Glassmorphism Core Rules ── */
+.glass-card {
+  background: var(--glass-gradient);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  transition: border-color 0.4s var(--ease-out-expo),
+              box-shadow 0.4s var(--ease-out-expo),
+              transform 0.4s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Specular Light Reflection Rim on Glass Edge */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 45%, rgba(0, 255, 136, 0.3) 70%, transparent 100%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.glass-card:hover {
+  border-color: var(--border-glass-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-4px);
+}
+
+.glass-panel {
+  background: var(--glass-gradient-elevated);
+  backdrop-filter: var(--glass-blur-deep);
+  -webkit-backdrop-filter: var(--glass-blur-deep);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Small Frosted Glass Pill Tag/Chip */
+.glass-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: var(--glass-blur-pill);
+  -webkit-backdrop-filter: var(--glass-blur-pill);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--glass-shadow-pill);
+  font-size: 0.8rem;
+  color: var(--text);
+  transition: all 0.25s ease;
+}
+
+.glass-pill:hover {
+  border-color: rgba(0, 255, 136, 0.35);
+  background: rgba(0, 255, 136, 0.08);
+  color: var(--green);
+}
+
+/* ── Interactive Buttons & Links ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  transition: all 0.3s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--green);
+  color: #000000;
+  box-shadow: 0 0 24px rgba(0, 255, 136, 0.4), inset 0 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.btn-primary:hover {
+  background: var(--green-soft);
+  box-shadow: 0 0 36px rgba(0, 255, 136, 0.65), inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.btn-glass:hover {
+  border-color: rgba(0, 255, 136, 0.55);
+  color: var(--green);
+  background: rgba(0, 255, 136, 0.08);
+  box-shadow: 0 10px 32px rgba(0, 255, 136, 0.22), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Frosted Glass Form Inputs */
+.form-input {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  color: #EDEDED;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.3s var(--ease-out-expo);
+  outline: none;
+}
+
+.form-input:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.form-input:focus {
+  border-color: var(--green);
+  background: rgba(0, 255, 136, 0.04);
+  box-shadow: 0 0 0 1px var(--green), 0 0 24px rgba(0, 255, 136, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+/* Accessible focus visible */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ambient-blob {
+    animation: none !important;
+  }
+}
