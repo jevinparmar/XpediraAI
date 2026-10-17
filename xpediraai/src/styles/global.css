@@ -538,6 +538,21 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
+/* SplitText Masking Helpers */
+.split-line-masked {
+  overflow: hidden !important;
+  display: block !important;
+}
+
+.split-line {
+  display: block;
+}
+
+.scrub-word {
+  display: inline-block;
+  will-change: opacity;
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
