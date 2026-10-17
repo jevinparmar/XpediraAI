@@ -1,340 +1,402 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 
 /**
- * Custom Supersonic Neon Cursor
- * Modeled with mathematical precision after the user's reference image:
- * - Crisp white-bordered aerospace chevron pointer with volumetric neon green aura
- * - 4 cascading green ghost afterimages that dock neatly behind the notch at rest
- *   and fluidly stretch/curve into a supersonic motion trail when moving
- * - Sub-pixel hotspot alignment at the sharp tip
- * - Interactive magnetic hover blooming and snappy click compression
+ * Premium Custom Electric Glow Cursor with Magnetic Effects
+ * Crafted specifically for Xpedira AI's royal dark slate (#111827) & champagne gold (#D6A84F) theme.
+ *
+ * Features:
+ * 1. Central Dot (6px): Crisp white/gold core tracking pointer with ultra-low latency.
+ * 2. Outer Glow Ring (32px default): Thin champagne gold border with fluid GSAP quickTo trailing lag.
+ * 3. Electric Glow: Controlled, elegant radial aura and subtle inner wash matching brand tokens.
+ * 4. Contextual States: Dynamic response on buttons, links, cards ("VIEW" label), and text inputs.
+ * 5. Subtle Magnetic Effects: 3–8px smooth displacement on eligible nav links, buttons, and icons.
+ * 6. Accessibility & Performance: Strict fine-pointer detection, touch-disabled, prefers-reduced-motion safe,
+ *    and zero React re-renders on mousemove.
  */
 
-const GHOST_COUNT = 4;
-
-// Rest offsets along the arrow notch axis (dx=4.2px, dy=5.8px per step)
-const REST_STEP_X = 4.2;
-const REST_STEP_Y = 5.8;
-
-const GHOST_CONFIG = [
-  {
-    scale: 0.94,
-    restOpacity: 0.84,
-    stroke: '#D6A84F',
-    strokeWidth: 2.2,
-    fill: 'rgba(214, 168, 79, 0.26)',
-    glow: 'drop-shadow(0 0 6px rgba(214, 168, 79, 0.95)) drop-shadow(0 0 12px rgba(214, 168, 79, 0.5))',
-    lerp: 0.44,
-  },
-  {
-    scale: 0.86,
-    restOpacity: 0.68,
-    stroke: '#E2B964',
-    strokeWidth: 1.9,
-    fill: 'rgba(214, 168, 79, 0.20)',
-    glow: 'drop-shadow(0 0 5px rgba(214, 168, 79, 0.80)) drop-shadow(0 0 10px rgba(214, 168, 79, 0.4))',
-    lerp: 0.35,
-  },
-  {
-    scale: 0.78,
-    restOpacity: 0.52,
-    stroke: '#C59740',
-    strokeWidth: 1.6,
-    fill: 'rgba(214, 168, 79, 0.14)',
-    glow: 'drop-shadow(0 0 4px rgba(214, 168, 79, 0.65)) drop-shadow(0 0 8px rgba(214, 168, 79, 0.3))',
-    lerp: 0.27,
-  },
-  {
-    scale: 0.70,
-    restOpacity: 0.36,
-    stroke: '#B38531',
-    strokeWidth: 1.3,
-    fill: 'rgba(214, 168, 79, 0.08)',
-    glow: 'drop-shadow(0 0 3px rgba(214, 168, 79, 0.50)) drop-shadow(0 0 6px rgba(214, 168, 79, 0.2))',
-    lerp: 0.19,
-  },
-];
-
 export default function Cursor() {
-  const leaderRef = useRef(null);
-  const ghostRefs = useRef([]);
-
-  const mousePos = useRef({ x: -200, y: -200 });
-  const prevMousePos = useRef({ x: -200, y: -200 });
-  const speedRef = useRef(0);
-
-  // Ghost positions array
-  const ghosts = useRef(
-    Array.from({ length: GHOST_COUNT }, (_, i) => ({
-      x: -200 + (i + 1) * REST_STEP_X,
-      y: -200 + (i + 1) * REST_STEP_Y,
-    }))
-  );
-
-  const [isVisible, setIsVisible] = useState(false);
-  const isVisibleRef = useRef(false);
-  const isHoveredRef = useRef(false);
-  const isClickingRef = useRef(false);
-  const currentScale = useRef(1);
-
-  const [isTouchDevice] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
-  });
+  const containerRef = useRef(null);
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+  const labelRef = useRef(null);
 
   useEffect(() => {
-    if (isTouchDevice) return;
+    // 1. Accessibility & Device Detection
+    if (typeof window === 'undefined') return;
 
-    let rafId = null;
-    let initialized = false;
+    const isFinePointer =
+      window.matchMedia('(pointer: fine)').matches &&
+      !window.matchMedia('(pointer: coarse)').matches;
 
-    const handleMouseMove = (e) => {
-      const { clientX, clientY } = e;
-      mousePos.current.x = clientX;
-      mousePos.current.y = clientY;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      if (!initialized) {
-        initialized = true;
-        prevMousePos.current.x = clientX;
-        prevMousePos.current.y = clientY;
-        for (let i = 0; i < GHOST_COUNT; i++) {
-          ghosts.current[i].x = clientX + (i + 1) * REST_STEP_X;
-          ghosts.current[i].y = clientY + (i + 1) * REST_STEP_Y;
-        }
-      }
+    if (!isFinePointer || prefersReducedMotion) {
+      return;
+    }
 
-      if (!isVisibleRef.current) {
-        isVisibleRef.current = true;
-        setIsVisible(true);
+    // Add root marker class so global CSS hides native cursor cleanly (preserving inputs/textareas)
+    document.documentElement.classList.add('has-custom-cursor');
+
+    const containerEl = containerRef.current;
+    const dotEl = dotRef.current;
+    const ringEl = ringRef.current;
+    const labelEl = labelRef.current;
+
+    if (!containerEl || !dotEl || !ringEl) return;
+
+    // 2. High-performance GSAP quickTo setters (translate transforms, zero layout shifts)
+    // Central dot: 6px diameter -> offset -3px
+    const xToDot = gsap.quickTo(dotEl, 'x', { duration: 0.08, ease: 'power3.out' });
+    const yToDot = gsap.quickTo(dotEl, 'y', { duration: 0.08, ease: 'power3.out' });
+
+    // Outer glow ring: 32px diameter -> offset -16px
+    const xToRing = gsap.quickTo(ringEl, 'x', { duration: 0.32, ease: 'power3.out' });
+    const yToRing = gsap.quickTo(ringEl, 'y', { duration: 0.32, ease: 'power3.out' });
+
+    let isVisible = false;
+    let currentState = 'default';
+    let isMouseDown = false;
+    let currentMagneticEl = null;
+
+    // Helper to apply contextual states with GSAP
+    const applyState = (state) => {
+      if (currentState === state && !isMouseDown) return;
+      currentState = state;
+
+      const clickScaleFactor = isMouseDown ? 0.85 : 1;
+
+      switch (state) {
+        case 'text':
+          // Fade out custom cursor completely over inputs / textareas to yield to native text cursor
+          gsap.to(containerEl, { opacity: 0, duration: 0.18, overwrite: 'auto' });
+          break;
+
+        case 'button':
+          // Enlarged ring with intensified champagne gold electric glow
+          gsap.to(containerEl, { opacity: 1, duration: 0.18, overwrite: 'auto' });
+          gsap.to(ringEl, {
+            scale: 1.55 * clickScaleFactor,
+            borderColor: 'rgba(214, 168, 79, 0.95)',
+            boxShadow:
+              '0 0 24px rgba(214, 168, 79, 0.55), 0 0 48px rgba(214, 168, 79, 0.22), inset 0 0 12px rgba(214, 168, 79, 0.28)',
+            background: 'radial-gradient(circle, rgba(214, 168, 79, 0.15) 0%, transparent 70%)',
+            duration: 0.32,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
+          gsap.to(dotEl, {
+            scale: 0.45 * (isMouseDown ? 1.4 : 1),
+            opacity: 0.6,
+            duration: 0.25,
+            overwrite: 'auto',
+          });
+          if (labelEl) {
+            gsap.to(labelEl, { opacity: 0, scale: 0.7, duration: 0.2, overwrite: 'auto' });
+          }
+          break;
+
+        case 'link':
+          // Subtly enlarged ring for navigation links and interactive icons
+          gsap.to(containerEl, { opacity: 1, duration: 0.18, overwrite: 'auto' });
+          gsap.to(ringEl, {
+            scale: 1.25 * clickScaleFactor,
+            borderColor: 'rgba(214, 168, 79, 0.85)',
+            boxShadow:
+              '0 0 18px rgba(214, 168, 79, 0.42), 0 0 32px rgba(214, 168, 79, 0.15), inset 0 0 10px rgba(214, 168, 79, 0.18)',
+            background: 'radial-gradient(circle, rgba(214, 168, 79, 0.10) 0%, transparent 70%)',
+            duration: 0.3,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
+          gsap.to(dotEl, {
+            scale: 0.65 * (isMouseDown ? 1.3 : 1),
+            opacity: 0.75,
+            duration: 0.25,
+            overwrite: 'auto',
+          });
+          if (labelEl) {
+            gsap.to(labelEl, { opacity: 0, scale: 0.7, duration: 0.2, overwrite: 'auto' });
+          }
+          break;
+
+        case 'card':
+          // Expanded showcase ring with contextual "VIEW" badge
+          gsap.to(containerEl, { opacity: 1, duration: 0.18, overwrite: 'auto' });
+          gsap.to(ringEl, {
+            scale: 1.8 * clickScaleFactor,
+            borderColor: 'rgba(214, 168, 79, 0.90)',
+            boxShadow:
+              '0 0 28px rgba(214, 168, 79, 0.50), 0 0 54px rgba(214, 168, 79, 0.20), inset 0 0 14px rgba(214, 168, 79, 0.24)',
+            background: 'radial-gradient(circle, rgba(214, 168, 79, 0.16) 0%, transparent 70%)',
+            duration: 0.35,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
+          gsap.to(dotEl, { scale: 0, opacity: 0, duration: 0.2, overwrite: 'auto' });
+          if (labelEl) {
+            gsap.to(labelEl, {
+              opacity: 1,
+              scale: 1,
+              duration: 0.25,
+              ease: 'back.out(1.5)',
+              overwrite: 'auto',
+            });
+          }
+          break;
+
+        default:
+          // Default resting electric glow state
+          gsap.to(containerEl, { opacity: 1, duration: 0.18, overwrite: 'auto' });
+          gsap.to(ringEl, {
+            scale: 1 * clickScaleFactor,
+            borderColor: 'rgba(214, 168, 79, 0.75)',
+            boxShadow:
+              '0 0 16px rgba(214, 168, 79, 0.36), 0 0 28px rgba(214, 168, 79, 0.12), inset 0 0 10px rgba(214, 168, 79, 0.16)',
+            background: 'radial-gradient(circle, rgba(214, 168, 79, 0.08) 0%, transparent 70%)',
+            duration: 0.3,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
+          gsap.to(dotEl, {
+            scale: 1 * (isMouseDown ? 1.3 : 1),
+            opacity: 1,
+            duration: 0.25,
+            overwrite: 'auto',
+          });
+          if (labelEl) {
+            gsap.to(labelEl, { opacity: 0, scale: 0.7, duration: 0.2, overwrite: 'auto' });
+          }
+          break;
       }
     };
 
+    // 3. Pointer move & Magnetic displacement handler
+    const handlePointerMove = (e) => {
+      const { clientX, clientY } = e;
+
+      if (!isVisible) {
+        isVisible = true;
+        gsap.to(containerEl, { opacity: 1, duration: 0.2 });
+      }
+
+      // Smooth coordinate interpolation (centered on pointer)
+      xToDot(clientX - 3);
+      yToDot(clientY - 3);
+      xToRing(clientX - 16);
+      yToRing(clientY - 16);
+
+      // Determine hovered element context
+      const target = e.target;
+      if (!target || typeof target.closest !== 'function') return;
+
+      // A. Input / Form fields
+      if (target.closest('input, textarea, select, [contenteditable="true"]')) {
+        applyState('text');
+        resetMagnetic();
+        return;
+      }
+
+      // B. Buttons & Primary CTAs
+      if (
+        target.closest(
+          'button, .btn, [role="button"], .nav-action-btn, input[type="submit"], .glass-dock button'
+        )
+      ) {
+        applyState('button');
+        handleMagneticElement(target, e, 0.28, 7);
+        return;
+      }
+
+      // C. Navigation Links & Icons
+      if (
+        target.closest(
+          'a, .nav-link, .desktop-nav a, .social-icon, .icon-btn, [data-magnetic="true"]'
+        )
+      ) {
+        applyState('link');
+        handleMagneticElement(target, e, 0.22, 5);
+        return;
+      }
+
+      // D. Interactive Cards (Services, Team, Features)
+      if (target.closest('.service-card, .glass-card, .team-member-card, [data-cursor-view]')) {
+        applyState('card');
+        resetMagnetic();
+        return;
+      }
+
+      // E. Default State
+      applyState('default');
+      resetMagnetic();
+    };
+
+    // 4. Magnetic displacement calculation
+    const handleMagneticElement = (target, e, strength = 0.25, maxDist = 6) => {
+      const eligible = target.closest(
+        '.desktop-nav a, a[aria-label="LinkedIn"], a[aria-label="GitHub"], a[aria-label="Twitter"], button[aria-label="Scroll back to top"], button[title="Copy email to clipboard"], .nav-action-btn, [data-magnetic="true"]'
+      );
+
+      // If element is already managed by dedicated component (e.g. MagneticButton), do not conflict
+      if (!eligible || eligible.closest('[data-magnetic-button]')) {
+        resetMagnetic();
+        return;
+      }
+
+      if (currentMagneticEl && currentMagneticEl !== eligible) {
+        gsap.to(currentMagneticEl, { x: 0, y: 0, duration: 0.45, ease: 'power3.out', overwrite: 'auto' });
+      }
+
+      currentMagneticEl = eligible;
+      const rect = eligible.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+
+      const moveX = Math.max(-maxDist, Math.min(maxDist, dx * strength));
+      const moveY = Math.max(-maxDist, Math.min(maxDist, dy * strength));
+
+      gsap.to(eligible, {
+        x: moveX,
+        y: moveY,
+        duration: 0.32,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      });
+    };
+
+    const resetMagnetic = () => {
+      if (currentMagneticEl) {
+        gsap.to(currentMagneticEl, {
+          x: 0,
+          y: 0,
+          duration: 0.55,
+          ease: 'power3.out',
+          overwrite: 'auto',
+        });
+        currentMagneticEl = null;
+      }
+    };
+
+    // 5. Click compression interactions
     const handleMouseDown = () => {
-      isClickingRef.current = true;
+      if (currentState === 'text') return;
+      isMouseDown = true;
+      applyState(currentState);
     };
 
     const handleMouseUp = () => {
-      isClickingRef.current = false;
+      isMouseDown = false;
+      applyState(currentState);
     };
 
-    const handleMouseOver = (e) => {
-      const target = e.target;
-      if (
-        target.closest('a') ||
-        target.closest('button') ||
-        target.closest('[role="button"]') ||
-        target.closest('input') ||
-        target.closest('textarea') ||
-        target.closest('select') ||
-        target.closest('.interactive-target') ||
-        target.closest('.glass-card') ||
-        target.closest('.glass-pill') ||
-        target.closest('.glass-dock') ||
-        target.closest('.nav-action-btn')
-      ) {
-        isHoveredRef.current = true;
-      } else {
-        isHoveredRef.current = false;
+    // 6. Viewport boundary handling
+    const handleMouseLeave = () => {
+      isVisible = false;
+      gsap.to(containerEl, { opacity: 0, duration: 0.25 });
+      resetMagnetic();
+    };
+
+    const handleMouseEnter = () => {
+      if (currentState !== 'text') {
+        isVisible = true;
+        gsap.to(containerEl, { opacity: 1, duration: 0.25 });
       }
     };
 
-    const handleMouseLeave = () => {
-      isVisibleRef.current = false;
-      setIsVisible(false);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    // Attach listeners
+    window.addEventListener('mousemove', handlePointerMove, { passive: true });
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('mouseover', handleMouseOver);
     document.documentElement.addEventListener('mouseleave', handleMouseLeave);
+    document.documentElement.addEventListener('mouseenter', handleMouseEnter);
 
-    // High performance RAF trailing physics loop
-    const render = (time) => {
-      // 1. Calculate target scale based on hover/clicking state
-      let targetScale = 1;
-      if (isClickingRef.current) {
-        targetScale = 0.88;
-      } else if (isHoveredRef.current) {
-        targetScale = 1.15;
-      }
-      currentScale.current += (targetScale - currentScale.current) * 0.22;
-
-      // 2. Compute motion speed
-      const mx = mousePos.current.x;
-      const my = mousePos.current.y;
-      const dx = mx - prevMousePos.current.x;
-      const dy = my - prevMousePos.current.y;
-      const instantSpeed = Math.hypot(dx, dy);
-      speedRef.current += (instantSpeed - speedRef.current) * 0.2;
-      prevMousePos.current.x = mx;
-      prevMousePos.current.y = my;
-
-      // Moving factor: 0 when stationary, up to 1 when moving quickly
-      const movingFactor = Math.min(1, speedRef.current / 6);
-
-      // Subtle breathing pulse when resting
-      const pulse = Math.sin(time * 0.003) * 0.03 * (1 - movingFactor);
-
-      if (initialized) {
-        // Ghost 0 tracks towards mouse with resting offset reduced dynamically during fast motion
-        const restScale = 1 - movingFactor * 0.65;
-        const target0X = mx + REST_STEP_X * restScale;
-        const target0Y = my + REST_STEP_Y * restScale;
-
-        ghosts.current[0].x += (target0X - ghosts.current[0].x) * GHOST_CONFIG[0].lerp;
-        ghosts.current[0].y += (target0Y - ghosts.current[0].y) * GHOST_CONFIG[0].lerp;
-
-        // Ghosts 1..3 track preceding ghost with offset
-        for (let i = 1; i < GHOST_COUNT; i++) {
-          const targetIX = ghosts.current[i - 1].x + REST_STEP_X * restScale;
-          const targetIY = ghosts.current[i - 1].y + REST_STEP_Y * restScale;
-
-          ghosts.current[i].x += (targetIX - ghosts.current[i].x) * GHOST_CONFIG[i].lerp;
-          ghosts.current[i].y += (targetIY - ghosts.current[i].y) * GHOST_CONFIG[i].lerp;
-        }
-      }
-
-      // 3. Update Leader pointer transform (hotspot at tip: clientX - 1.2px, clientY - 1.2px)
-      if (leaderRef.current) {
-        const s = (currentScale.current + pulse).toFixed(3);
-        leaderRef.current.style.transform = `translate3d(${(mx - 1.2).toFixed(1)}px, ${(my - 1.2).toFixed(1)}px, 0) scale(${s})`;
-      }
-
-      // 4. Update Ghost transforms & dynamic opacities
-      for (let i = 0; i < GHOST_COUNT; i++) {
-        const el = ghostRefs.current[i];
-        if (el) {
-          const cfg = GHOST_CONFIG[i];
-          const s = (cfg.scale * (currentScale.current + pulse)).toFixed(3);
-          const gx = ghosts.current[i].x - 1.2;
-          const gy = ghosts.current[i].y - 1.2;
-
-          // Motion boosts ghost trail opacity slightly for high-speed streaming
-          const dynamicOpacity = Math.min(1, cfg.restOpacity + movingFactor * 0.15).toFixed(3);
-
-          el.style.transform = `translate3d(${gx.toFixed(1)}px, ${gy.toFixed(1)}px, 0) scale(${s})`;
-          el.style.opacity = dynamicOpacity;
-        }
-      }
-
-      rafId = requestAnimationFrame(render);
-    };
-
-    rafId = requestAnimationFrame(render);
-
+    // Cleanup on unmount
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      window.removeEventListener('mousemove', handleMouseMove);
+      document.documentElement.classList.remove('has-custom-cursor');
+      window.removeEventListener('mousemove', handlePointerMove);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('mouseover', handleMouseOver);
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
+      document.documentElement.removeEventListener('mouseenter', handleMouseEnter);
+      resetMagnetic();
     };
-  }, [isTouchDevice]);
-
-  if (isTouchDevice) return null;
+  }, []);
 
   return (
     <div
+      ref={containerRef}
       style={{
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
         zIndex: 99999,
-        opacity: isVisible ? 1 : 0,
-        transition: 'opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+        opacity: 0,
+        willChange: 'opacity',
       }}
       aria-hidden="true"
     >
-      {/* Shared SVG gradients definition */}
-      <svg width="0" height="0" style={{ position: 'absolute' }}>
-        <defs>
-          <linearGradient id="cursorLeaderStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="75%" stopColor="#FFFDF7" />
-            <stop offset="100%" stopColor="#F5DFB0" />
-          </linearGradient>
-          <linearGradient id="cursorLeaderFill" x1="15%" y1="15%" x2="85%" y2="85%">
-            <stop offset="0%" stopColor="rgba(214, 168, 79, 0.25)" />
-            <stop offset="55%" stopColor="rgba(50, 38, 15, 0.40)" />
-            <stop offset="100%" stopColor="rgba(25, 18, 8, 0.55)" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      {/* Trailing Ghost Arrows (rendered underneath leader, furthest to closest) */}
-      {GHOST_CONFIG.slice().reverse().map((cfg, revIdx) => {
-        const realIdx = GHOST_COUNT - 1 - revIdx;
-        return (
-          <div
-            key={realIdx}
-            ref={(el) => (ghostRefs.current[realIdx] = el)}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '28px',
-              height: '33px',
-              willChange: 'transform, opacity',
-              pointerEvents: 'none',
-              filter: cfg.glow,
-            }}
-          >
-            <svg
-              width="28"
-              height="33"
-              viewBox="0 0 46 54"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ display: 'block', overflow: 'visible' }}
-            >
-              <path
-                d="M 2 2 L 43 28 L 24 32 L 16 51 Z"
-                fill={cfg.fill}
-                stroke={cfg.stroke}
-                strokeWidth={cfg.strokeWidth}
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-        );
-      })}
-
-      {/* Primary Crisp White Arrow with Radiant Champagne Gold Aura */}
+      {/* Outer Electric Glow Ring (32px diameter, centered via quickTo with -16px offset) */}
       <div
-        ref={leaderRef}
+        ref={ringRef}
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '28px',
-          height: '33px',
-          willChange: 'transform',
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          border: '1.5px solid rgba(214, 168, 79, 0.75)',
+          background: 'radial-gradient(circle, rgba(214, 168, 79, 0.08) 0%, transparent 70%)',
+          boxShadow:
+            '0 0 16px rgba(214, 168, 79, 0.36), 0 0 28px rgba(214, 168, 79, 0.12), inset 0 0 10px rgba(214, 168, 79, 0.16)',
           pointerEvents: 'none',
-          filter:
-            'drop-shadow(0 0 3px #FFFFFF) drop-shadow(0 0 8px #D6A84F) drop-shadow(0 0 16px rgba(214, 168, 79, 0.85)) drop-shadow(0 0 26px rgba(214, 168, 79, 0.45))',
+          willChange: 'transform, border-color, box-shadow, background',
+          transformOrigin: 'center center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        <svg
-          width="28"
-          height="33"
-          viewBox="0 0 46 54"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ display: 'block', overflow: 'visible' }}
+        {/* Contextual Card Hover Label */}
+        <span
+          ref={labelRef}
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: '8.5px',
+            fontWeight: 700,
+            letterSpacing: '0.12em',
+            color: 'var(--green, #D6A84F)',
+            textShadow: '0 0 8px rgba(214, 168, 79, 0.65)',
+            opacity: 0,
+            transform: 'scale(0.7)',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
         >
-          <path
-            d="M 2 2 L 43 28 L 24 32 L 16 51 Z"
-            fill="url(#cursorLeaderFill)"
-            stroke="url(#cursorLeaderStroke)"
-            strokeWidth="2.4"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-          />
-        </svg>
+          VIEW
+        </span>
       </div>
+
+      {/* Central Crisp Dot (6px diameter, centered via quickTo with -3px offset) */}
+      <div
+        ref={dotRef}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          backgroundColor: '#EDEDED',
+          boxShadow:
+            '0 0 10px rgba(214, 168, 79, 0.95), 0 0 16px rgba(214, 168, 79, 0.5), 0 0 2px #FFFFFF',
+          pointerEvents: 'none',
+          willChange: 'transform, opacity',
+          transformOrigin: 'center center',
+        }}
+      />
     </div>
   );
 }
