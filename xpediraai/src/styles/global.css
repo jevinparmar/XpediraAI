@@ -9,7 +9,7 @@
 }
 
 html {
-  scroll-behavior: auto; /* Lenis handles smooth scrolling */
+  scroll-behavior: auto !important; /* Lenis handles smooth scrolling */
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
@@ -17,6 +17,15 @@ html {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
 }
 
 body {

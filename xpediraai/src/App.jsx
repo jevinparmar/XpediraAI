@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Lenis from 'lenis';
+import { ReactLenis, useLenis } from 'lenis/react';
 import 'lenis/dist/lenis.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -18,38 +18,30 @@ import Footer from './components/Footer';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Dedicated hook component to synchronize Lenis scroll events with GSAP ScrollTrigger
+function LenisSyncManager({ lenisRef }) {
+  const lenis = useLenis(() => {
+    ScrollTrigger.update();
+  });
+
+  useEffect(() => {
+    if (lenis) {
+      window.lenis = lenis;
+      if (lenisRef) {
+        lenisRef.current = lenis;
+      }
+    }
+  }, [lenis, lenisRef]);
+
+  return null;
+}
+
 export default function App() {
   const [loading, setLoading] = useState(true);
   const lenisRef = useRef(null);
   const mainRef = useRef(null);
 
   useEffect(() => {
-    // Initialize Lenis Smooth Scroll with fine-tuned friction and momentum
-    const lenisInstance = new Lenis({
-      duration: 1.25,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
-      infinite: false,
-    });
-
-    lenisRef.current = lenisInstance;
-    window.lenis = lenisInstance;
-
-    // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
-    lenisInstance.on('scroll', ScrollTrigger.update);
-
-    // Drive Lenis RAF through GSAP's ticker for lockstep synchronization
-    const updateTicker = (time) => {
-      lenisInstance.raf(time * 1000);
-    };
-
-    gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
-
     // Global anchor link smooth scroll handler for all internal navigation (#)
     const handleAnchorClick = (e) => {
       const anchor = e.target.closest('a[href^="#"]');
@@ -60,10 +52,15 @@ export default function App() {
       const targetEl = document.querySelector(targetId);
       if (targetEl) {
         e.preventDefault();
-        lenisInstance.scrollTo(targetEl, {
-          offset: -70,
-          duration: 1.2,
-        });
+        const activeLenis = window.lenis || lenisRef.current?.lenis || lenisRef.current;
+        if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+          activeLenis.scrollTo(targetEl, {
+            offset: -70,
+            duration: 1.3,
+          });
+        } else {
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     };
 
@@ -71,10 +68,6 @@ export default function App() {
 
     return () => {
       document.removeEventListener('click', handleAnchorClick);
-      gsap.ticker.remove(updateTicker);
-      lenisInstance.destroy();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-      window.lenis = null;
     };
   }, []);
 
@@ -82,51 +75,66 @@ export default function App() {
     setLoading(false);
     // Refresh ScrollTrigger calculations and resize Lenis dimensions once revealed
     setTimeout(() => {
-      if (lenisRef.current) {
-        lenisRef.current.resize();
+      const activeLenis = window.lenis || lenisRef.current?.lenis || lenisRef.current;
+      if (activeLenis && typeof activeLenis.resize === 'function') {
+        activeLenis.resize();
       }
       ScrollTrigger.refresh();
     }, 150);
   };
 
   return (
-    <div className="app-container" ref={mainRef}>
-      {/* Full-Bleed Cyber Square Grid with Interactive Cursor Spotlight */}
-      <SquaresBackground />
+    <ReactLenis
+      root
+      ref={lenisRef}
+      options={{
+        lerp: 0.08, // Buttery smooth continuous gliding interpolation
+        smoothWheel: true,
+        wheelMultiplier: 1.0,
+        touchMultiplier: 1.5,
+        infinite: false,
+        autoRaf: true,
+      }}
+    >
+      <LenisSyncManager lenisRef={lenisRef} />
+      <div className="app-container" ref={mainRef}>
+        {/* Full-Bleed Cyber Square Grid with Interactive Cursor Spotlight */}
+        <SquaresBackground />
 
-      {/* Matte Film Noise Overlay */}
-      <div className="matte-noise" aria-hidden="true" />
+        {/* Matte Film Noise Overlay */}
+        <div className="matte-noise" aria-hidden="true" />
 
-      {/* Floating Multi-Hued Ambient Blobs for Glass Refraction */}
-      <div className="ambient-bg" aria-hidden="true">
-        <div className="ambient-blob ambient-blob-1" />
-        <div className="ambient-blob ambient-blob-2" />
-        <div className="ambient-blob ambient-blob-3" />
-        <div className="ambient-blob ambient-blob-4" />
-        <div className="ambient-blob ambient-blob-5" />
+        {/* Floating Multi-Hued Ambient Blobs for Glass Refraction */}
+        <div className="ambient-bg" aria-hidden="true">
+          <div className="ambient-blob ambient-blob-1" />
+          <div className="ambient-blob ambient-blob-2" />
+          <div className="ambient-blob ambient-blob-3" />
+          <div className="ambient-blob ambient-blob-4" />
+          <div className="ambient-blob ambient-blob-5" />
+        </div>
+
+        {/* Custom Cursor (Arrow + Smooth Lag Glass Ring) */}
+        <Cursor />
+
+        {/* Intro Preloader */}
+        {loading && <Preloader onComplete={handlePreloaderComplete} />}
+
+        {/* Fixed Glass Navbar */}
+        <Navbar lenisRef={lenisRef} />
+
+        {/* Main Single-Page Sections */}
+        <main>
+          <Hero lenisRef={lenisRef} />
+          <Services />
+          <Tech />
+          <WhyUs />
+          <Team />
+          <Contact />
+        </main>
+
+        {/* Minimal Glass Footer */}
+        <Footer lenisRef={lenisRef} />
       </div>
-
-      {/* Custom Cursor (Arrow + Smooth Lag Glass Ring) */}
-      <Cursor />
-
-      {/* Intro Preloader */}
-      {loading && <Preloader onComplete={handlePreloaderComplete} />}
-
-      {/* Fixed Glass Navbar */}
-      <Navbar lenisRef={lenisRef} />
-
-      {/* Main Single-Page Sections */}
-      <main>
-        <Hero lenisRef={lenisRef} />
-        <Services />
-        <Tech />
-        <WhyUs />
-        <Team />
-        <Contact />
-      </main>
-
-      {/* Minimal Glass Footer */}
-      <Footer lenisRef={lenisRef} />
-    </div>
+    </ReactLenis>
   );
 }

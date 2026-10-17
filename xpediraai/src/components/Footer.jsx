@@ -4,8 +4,9 @@ import { IconLinkedin, IconGithub, IconTwitter } from './Icons';
 
 export default function Footer({ lenisRef }) {
   const scrollToTop = () => {
-    if (lenisRef && lenisRef.current) {
-      lenisRef.current.scrollTo(0, { duration: 1.4 });
+    const activeLenis = window.lenis || (lenisRef && lenisRef.current?.lenis) || lenisRef?.current;
+    if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+      activeLenis.scrollTo(0, { duration: 1.4 });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

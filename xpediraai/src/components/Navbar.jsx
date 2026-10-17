@@ -30,8 +30,9 @@ export default function Navbar({ lenisRef }) {
     const element = document.querySelector(targetId);
     if (!element) return;
 
-    if (lenisRef && lenisRef.current) {
-      lenisRef.current.scrollTo(element, { offset: -70, duration: 1.2 });
+    const activeLenis = window.lenis || (lenisRef && lenisRef.current?.lenis) || lenisRef?.current;
+    if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+      activeLenis.scrollTo(element, { offset: -70, duration: 1.3 });
     } else {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -126,7 +127,12 @@ export default function Navbar({ lenisRef }) {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              const activeLenis = window.lenis || (lenisRef && lenisRef.current?.lenis) || lenisRef?.current;
+              if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+                activeLenis.scrollTo(0, { duration: 1.3 });
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
             }}
             style={{
               display: 'flex',

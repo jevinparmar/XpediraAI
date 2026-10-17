@@ -23,8 +23,9 @@ export default function Hero({ lenisRef }) {
     e.preventDefault();
     const el = document.querySelector(targetId);
     if (!el) return;
-    if (lenisRef && lenisRef.current) {
-      lenisRef.current.scrollTo(el, { offset: -60, duration: 1.2 });
+    const activeLenis = window.lenis || (lenisRef && lenisRef.current?.lenis) || lenisRef?.current;
+    if (activeLenis && typeof activeLenis.scrollTo === 'function') {
+      activeLenis.scrollTo(el, { offset: -60, duration: 1.3 });
     } else {
       el.scrollIntoView({ behavior: 'smooth' });
     }
