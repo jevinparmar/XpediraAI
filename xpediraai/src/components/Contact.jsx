@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import emailjs from '@emailjs/browser';
 import MagneticButton from './MagneticButton';
 import {
   Mail,
@@ -12,12 +13,14 @@ import {
   Loader2,
   Copy,
   Check,
+  AlertCircle,
 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const containerRef = useRef(null);
+  const formRef = useRef(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,7 +29,8 @@ export default function Contact() {
     message: '',
   });
 
-  const [formStatus, setFormStatus] = useState('idle'); // 'idle' | 'loading' | 'success'
+  const [formStatus, setFormStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+  const [errorMessage, setErrorMessage] = useState('');
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleCopyEmail = () => {
@@ -35,12 +39,39 @@ export default function Contact() {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFormStatus('loading');
+    setErrorMessage('');
 
-    // Simulate enterprise transmission
-    setTimeout(() => {
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.warn('EmailJS keys are missing in .env');
+      setFormStatus('error');
+      setErrorMessage(
+        'EmailJS configuration missing. Please add your VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, and VITE_EMAILJS_PUBLIC_KEY in .env.'
+      );
+      return;
+    }
+
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      organization: formData.organization || 'Not specified',
+      service: formData.service,
+      message: formData.message,
+      to_name: 'XpediraAI Leadership',
+      reply_to: formData.email,
+    };
+
+    try {
+      await emailjs.send(serviceId, templateId, templateParams, {
+        publicKey: publicKey,
+      });
+
       setFormStatus('success');
       setFormData({
         name: '',
@@ -49,8 +80,17 @@ export default function Contact() {
         service: 'Autonomous Agents & Swarms',
         message: '',
       });
-      setTimeout(() => setFormStatus('idle'), 5000);
-    }, 1200);
+
+      setTimeout(() => {
+        setFormStatus('idle');
+      }, 6000);
+    } catch (err) {
+      console.error('EmailJS Send Error:', err);
+      setFormStatus('error');
+      setErrorMessage(
+        err?.text || err?.message || 'Transmission failed. Please check network connection or verify your EmailJS keys.'
+      );
+    }
   };
 
   useEffect(() => {
@@ -340,7 +380,7 @@ export default function Contact() {
               boxShadow: '0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(214, 168, 79, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.28)',
             }}
           >
-            <form onSubmit={handleSubmit}>
+            <form ref={formRef} onSubmit={handleSubmit}>
               <div
                 style={{
                   display: 'grid',
@@ -357,6 +397,7 @@ export default function Contact() {
                   </label>
                   <input
                     id="contact-name"
+                    name="from_name"
                     type="text"
                     required
                     placeholder="e.g. Dr. Arthur Vance"
@@ -373,6 +414,7 @@ export default function Contact() {
                   </label>
                   <input
                     id="contact-email"
+                    name="from_email"
                     type="email"
                     required
                     placeholder="e.g. arthur@enterprise.com"
@@ -399,6 +441,7 @@ export default function Contact() {
                   </label>
                   <input
                     id="contact-org"
+                    name="organization"
                     type="text"
                     placeholder="e.g. NextEra Robotics"
                     value={formData.organization}
@@ -414,6 +457,7 @@ export default function Contact() {
                   </label>
                   <select
                     id="contact-service"
+                    name="service"
                     value={formData.service}
                     onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                     className="form-input"
@@ -436,6 +480,7 @@ export default function Contact() {
                 </label>
                 <textarea
                   id="contact-msg"
+                  name="message"
                   required
                   rows={4}
                   placeholder="Outline your workload, expected throughput, dataset dimensions, or architectural targets..."
@@ -476,6 +521,12 @@ export default function Contact() {
                       <Send size={18} />
                     </>
                   )}
+                  {formStatus === 'error' && (
+                    <>
+                      <span>Retry Transmission</span>
+                      <Send size={18} />
+                    </>
+                  )}
                 </MagneticButton>
               </div>
 
@@ -483,17 +534,45 @@ export default function Contact() {
                 <div
                   style={{
                     marginTop: '16px',
-                    padding: '12px 16px',
+                    padding: '14px 18px',
                     borderRadius: 'var(--radius-md)',
-                    background: 'rgba(214, 168, 79, 0.08)',
-                    border: '1px solid rgba(214, 168, 79, 0.3)',
+                    background: 'rgba(214, 168, 79, 0.1)',
+                    border: '1px solid rgba(214, 168, 79, 0.35)',
                     color: 'var(--green)',
-                    fontSize: '0.85rem',
-                    textAlign: 'center',
+                    fontSize: '0.9rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
                     fontFamily: 'var(--font-heading)',
                   }}
                 >
-                  ✓ Brief received. An AI Lead Architect will review and respond within 4 hours.
+                  <CheckCircle2 size={18} style={{ flexShrink: 0 }} />
+                  <span>Brief received! Your message has been sent directly to our team.</span>
+                </div>
+              )}
+
+              {formStatus === 'error' && (
+                <div
+                  style={{
+                    marginTop: '16px',
+                    padding: '14px 18px',
+                    borderRadius: 'var(--radius-md)',
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.35)',
+                    color: '#F87171',
+                    fontSize: '0.875rem',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '10px',
+                    fontFamily: 'var(--font-heading)',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <div>
+                    <div style={{ fontWeight: 600, marginBottom: '2px' }}>Transmission Notice</div>
+                    <div style={{ fontSize: '0.825rem', opacity: 0.9 }}>{errorMessage}</div>
+                  </div>
                 </div>
               )}
             </form>
