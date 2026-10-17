@@ -21,14 +21,33 @@ export default function Team() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Header reveal
       gsap.fromTo(
-        '.team-member-card',
-        { y: 40, opacity: 0 },
+        '#team .section-badge, #team .section-title, #team .section-subtitle',
+        { y: 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          stagger: 0.12,
+          duration: 0.85,
           ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '#team',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // CEO Card reveal
+      gsap.fromTo(
+        '.team-member-card',
+        { y: 55, opacity: 0, scale: 0.92 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.95,
+          ease: 'back.out(1.15)',
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 75%',

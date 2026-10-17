@@ -95,14 +95,33 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Header reveal
       gsap.fromTo(
-        '.contact-fade',
-        { y: 35, opacity: 0 },
+        '#contact .section-badge, #contact .section-title, #contact .section-subtitle',
+        { y: 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
+          stagger: 0.12,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '#contact',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // Glass cards staggered entrance
+      gsap.fromTo(
+        '.contact-fade',
+        { y: 50, opacity: 0, scale: 0.95 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
           stagger: 0.15,
-          duration: 0.8,
+          duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,

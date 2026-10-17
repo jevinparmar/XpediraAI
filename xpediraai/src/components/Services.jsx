@@ -311,19 +311,38 @@ export default function Services() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Staggered reveal of service cards on scroll
+      // Staggered header reveal
       gsap.fromTo(
-        '.service-card',
-        { y: 50, opacity: 0 },
+        '#services .section-badge, #services .section-title, #services .section-subtitle',
+        { y: 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.1,
-          duration: 0.8,
+          stagger: 0.12,
+          duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top 75%',
+            trigger: '#services',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // Staggered 3D reveal of service cards on scroll
+      gsap.fromTo(
+        '.service-card',
+        { y: 65, opacity: 0, scale: 0.94, rotateX: 6 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotateX: 0,
+          stagger: 0.1,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.services-grid',
+            start: 'top 82%',
           },
         }
       );

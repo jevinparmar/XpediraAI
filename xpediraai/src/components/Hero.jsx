@@ -1,8 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Scene3D from './Scene3D';
 import MagneticButton from './MagneticButton';
 import { ArrowDownRight, Cpu } from 'lucide-react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero({ lenisRef }) {
   const containerRef = useRef(null);
@@ -33,45 +36,79 @@ export default function Hero({ lenisRef }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.2 });
+      const tl = gsap.timeline({ delay: 0.25 });
 
-      // Badge reveal
+      // Badge reveal with slight bounce
       tl.fromTo(
         badgeRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }
+        { opacity: 0, y: -20, scale: 0.9 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.75, ease: 'back.out(1.6)' }
       );
 
-      // Split words stagger entrance
+      // Split words stagger entrance with 3D perspective rotation
       tl.fromTo(
         '.hero-word-inner',
-        { y: '115%', opacity: 0, rotateZ: 3 },
+        { y: '120%', opacity: 0, rotateX: -45 },
         {
           y: '0%',
           opacity: 1,
-          rotateZ: 0,
+          rotateX: 0,
           stagger: 0.08,
-          duration: 0.85,
+          duration: 0.95,
           ease: 'power4.out',
         },
-        '-=0.3'
+        '-=0.4'
       );
 
       // Subtext
       tl.fromTo(
         subtextRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
-        '-=0.4'
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+        '-=0.5'
       );
 
       // CTAs
       tl.fromTo(
         ctaRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
-        '-=0.4'
+        { opacity: 0, y: 24, scale: 0.96 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.2)' },
+        '-=0.5'
       );
+
+      // 3D Canvas entrance
+      tl.fromTo(
+        '.hero-canvas-wrapper',
+        { opacity: 0, scale: 0.88, y: 30 },
+        { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'power3.out' },
+        '-=0.8'
+      );
+
+      // Subtle scroll parallax depth (content floats up smoothly as user scrolls down)
+      gsap.to('.hero-left-content', {
+        y: -110,
+        opacity: 0.15,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.6,
+        },
+      });
+
+      gsap.to('.hero-canvas-wrapper', {
+        y: -70,
+        scale: 0.88,
+        opacity: 0.3,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.6,
+        },
+      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -104,7 +141,7 @@ export default function Hero({ lenisRef }) {
           className="hero-grid"
         >
           {/* Left Hero Content */}
-          <div style={{ maxWidth: '640px' }}>
+          <div className="hero-left-content" style={{ maxWidth: '640px' }}>
             {/* Pill Badge */}
             <div ref={badgeRef} style={{ display: 'inline-block' }}>
               <div className="section-badge">

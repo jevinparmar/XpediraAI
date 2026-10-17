@@ -42,6 +42,44 @@ export default function App() {
   const mainRef = useRef(null);
 
   useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Subtle background ambient parallax as you glide down with Lenis
+      gsap.to('.ambient-blob-1', {
+        y: 200,
+        x: -50,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: document.body,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.2,
+        },
+      });
+
+      gsap.to('.ambient-blob-2', {
+        y: -180,
+        x: 60,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: document.body,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.5,
+        },
+      });
+
+      gsap.to('.ambient-blob-3', {
+        y: 150,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: document.body,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.0,
+        },
+      });
+    }, mainRef);
+
     // Global anchor link smooth scroll handler for all internal navigation (#)
     const handleAnchorClick = (e) => {
       const anchor = e.target.closest('a[href^="#"]');
@@ -67,6 +105,7 @@ export default function App() {
     document.addEventListener('click', handleAnchorClick);
 
     return () => {
+      ctx.revert();
       document.removeEventListener('click', handleAnchorClick);
     };
   }, []);

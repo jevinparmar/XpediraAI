@@ -186,17 +186,53 @@ export default function Tech() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Header reveal
       gsap.fromTo(
-        '.tech-core-card',
-        { y: 35, opacity: 0 },
+        '#tech .section-badge, #tech .section-title, #tech .section-subtitle',
+        { y: 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.1,
-          duration: 0.75,
+          stagger: 0.12,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '#tech',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // Core cards staggered entrance with 3D depth
+      gsap.fromTo(
+        '.tech-core-card',
+        { y: 55, opacity: 0, scale: 0.94 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          stagger: 0.08,
+          duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: '.tech-core-grid',
+            start: 'top 82%',
+          },
+        }
+      );
+
+      // 3D Ecosystem banner reveal
+      gsap.fromTo(
+        '.tech-bottom-banner',
+        { y: 60, opacity: 0, scale: 0.95 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.95,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.tech-bottom-banner',
             start: 'top 82%',
           },
         }

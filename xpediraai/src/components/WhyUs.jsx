@@ -100,6 +100,41 @@ export default function WhyUs() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Header reveal
+      gsap.fromTo(
+        '#why .section-badge, #why .section-title, #why .section-subtitle',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.12,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '#why',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // Stat cards staggered entrance
+      gsap.fromTo(
+        '.why-stat-card',
+        { y: 45, opacity: 0, scale: 0.94 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          stagger: 0.09,
+          duration: 0.85,
+          ease: 'back.out(1.2)',
+          scrollTrigger: {
+            trigger: '.why-stat-grid',
+            start: 'top 85%',
+          },
+        }
+      );
+
       // 1. Counter animations for stats
       statNumbersRef.current.forEach((el, index) => {
         if (!el) return;
@@ -202,6 +237,7 @@ export default function WhyUs() {
 
         {/* Big Stat Blocks with Count-Up */}
         <div
+          className="why-stat-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
@@ -212,7 +248,7 @@ export default function WhyUs() {
           {STATS.map((stat, idx) => (
             <div
               key={idx}
-              className="glass-card"
+              className="glass-card why-stat-card"
               style={{
                 padding: '38px 30px',
                 display: 'flex',

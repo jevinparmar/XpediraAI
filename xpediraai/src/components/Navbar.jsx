@@ -39,9 +39,13 @@ export default function Navbar({ lenisRef }) {
   };
 
   useEffect(() => {
-    // Reset any transform on mount to ensure permanent fixed positioning
+    // Elegant slide-down entrance animation
     if (navRef.current) {
-      gsap.set(navRef.current, { y: 0 });
+      gsap.fromTo(
+        navRef.current,
+        { y: -80, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', delay: 0.1 }
+      );
     }
 
     // Toggle glass backdrop when scrolling
