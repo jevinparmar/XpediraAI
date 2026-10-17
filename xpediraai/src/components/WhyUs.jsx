@@ -3,6 +3,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { CheckCircle2, Zap, Lock, RefreshCw, Users } from 'lucide-react';
+import {
+  useHeadingReveal,
+  useParagraphHighlight,
+  scrambleText,
+} from '../hooks/useAdvancedAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -94,34 +99,47 @@ const FEATURES = [
 
 export default function WhyUs() {
   const containerRef = useRef(null);
+  const headingRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const badgeTextRef = useRef(null);
   const pinnedSectionRef = useRef(null);
   const scrollTriggerRef = useRef(null);
   const statNumbersRef = useRef([]);
   const [activeStep, setActiveStep] = useState(0);
 
+  // Advanced heading blur-to-sharp reveal
+  useHeadingReveal(headingRef, { blur: 12, stagger: 0.02, start: 'top 82%' });
+
+  // Paragraph word-by-word scrub highlight
+  useParagraphHighlight(subtitleRef, { start: 'top 85%', end: 'bottom 65%' });
+
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.why-stat-card'], {
+        gsap.set(['.section-badge', '.why-stat-card'], {
           opacity: 1,
           y: 0,
         });
         return;
       }
 
-      // Header reveal
+      // Initial badge scramble
+      if (badgeTextRef.current) {
+        scrambleText(badgeTextRef.current, 'Why Choose Us', 0.8);
+      }
+
+      // Badge entrance
       gsap.fromTo(
-        '.section-badge, .section-title, .section-subtitle',
-        { y: 35, opacity: 0 },
+        '.section-badge',
+        { y: 24, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.1,
-          duration: 0.9,
+          duration: 0.75,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 82%',
+            start: 'top 85%',
           },
         }
       );
@@ -224,16 +242,23 @@ export default function WhyUs() {
       <div className="section-container">
         {/* Section Header */}
         <div style={{ maxWidth: '680px', marginBottom: '56px' }}>
-          <div className="section-badge">
+          <div
+            className="section-badge"
+            onMouseEnter={() => {
+              if (badgeTextRef.current) {
+                scrambleText(badgeTextRef.current, 'Why Choose Us', 0.5);
+              }
+            }}
+          >
             <span className="section-badge-dot" />
-            <span>Why Choose Us</span>
+            <span ref={badgeTextRef}>Why Choose Us</span>
           </div>
 
-          <h2 className="section-title">
+          <h2 ref={headingRef} className="section-title">
             Engineered For The <span className="text-gradient-green">Demands of Scale</span>
           </h2>
 
-          <p className="section-subtitle">
+          <p ref={subtitleRef} className="section-subtitle">
             We don't build toys or fragile wrappers. We construct high-durability,
             enterprise-grade AI foundations designed to power the next generation of industry.
           </p>

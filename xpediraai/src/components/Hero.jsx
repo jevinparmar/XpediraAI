@@ -5,6 +5,7 @@ import { useGSAP } from '@gsap/react';
 import Scene3D from './Scene3D';
 import MagneticButton from './MagneticButton';
 import { ArrowDownRight, Cpu } from 'lucide-react';
+import { scrambleText } from '../hooks/useAdvancedAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,6 +14,7 @@ export default function Hero({ lenisRef }) {
   const headlineRef = useRef(null);
   const subtextRef = useRef(null);
   const badgeRef = useRef(null);
+  const badgeTextRef = useRef(null);
   const ctaRef = useRef(null);
 
   const headlineWords = [
@@ -38,46 +40,52 @@ export default function Hero({ lenisRef }) {
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set(['.hero-word-inner', badgeRef.current, subtextRef.current, ctaRef.current], {
+        gsap.set(['.hero-char', badgeRef.current, subtextRef.current, ctaRef.current], {
           opacity: 1,
           y: 0,
         });
         return;
       }
 
+      // 1. Initial Cyber Scramble Decode on Badge
+      if (badgeTextRef.current) {
+        scrambleText(badgeTextRef.current, 'Next-Gen Applied Neural Architecture', 0.9);
+      }
+
       const tl = gsap.timeline({ delay: 0.2 });
 
-      // Badge reveal with smooth spring
+      // 2. Badge entrance
       tl.fromTo(
         badgeRef.current,
         { opacity: 0, y: -20, scale: 0.92 },
         { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }
       );
 
-      // Split words stagger entrance with 3D perspective rotation
+      // 3. Main Hero Heading: Masked line-by-line slide-up with character stagger & 3D rotationX / skew settle
       tl.fromTo(
-        '.hero-word-inner',
-        { y: '120%', opacity: 0, rotateX: -40 },
+        '.hero-char',
+        { yPercent: 115, opacity: 0, rotateX: -35, skewY: 4 },
         {
-          y: '0%',
+          yPercent: 0,
           opacity: 1,
           rotateX: 0,
-          stagger: 0.08,
-          duration: 1.0,
+          skewY: 0,
+          stagger: 0.022,
+          duration: 0.95,
           ease: 'power4.out',
         },
         '-=0.45'
       );
 
-      // Subtext
+      // 4. Subtext paragraph reveal
       tl.fromTo(
         subtextRef.current,
-        { opacity: 0, y: 24 },
+        { opacity: 0, y: 22 },
         { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
-        '-=0.5'
+        '-=0.55'
       );
 
-      // CTAs
+      // 5. CTA action buttons
       tl.fromTo(
         ctaRef.current,
         { opacity: 0, y: 24, scale: 0.96 },
@@ -85,7 +93,7 @@ export default function Hero({ lenisRef }) {
         '-=0.55'
       );
 
-      // Subtle scroll parallax depth on text content as user scrolls down
+      // 6. Subtle scroll parallax depth on text content as user scrolls down
       gsap.to('.hero-left-content', {
         y: -85,
         opacity: 0.25,
@@ -100,6 +108,18 @@ export default function Hero({ lenisRef }) {
     },
     { scope: containerRef }
   );
+
+  // Letter-hover effect: Characters dynamically elevate on mouse over
+  const handleCharHover = (e) => {
+    gsap.to(e.currentTarget, {
+      y: -6,
+      color: '#D6A84F',
+      duration: 0.2,
+      ease: 'power2.out',
+      yoyo: true,
+      repeat: 1,
+    });
+  };
 
   return (
     <section
@@ -129,15 +149,23 @@ export default function Hero({ lenisRef }) {
         >
           {/* Left Hero Content */}
           <div className="hero-left-content" style={{ maxWidth: '640px' }}>
-            {/* Pill Badge */}
-            <div ref={badgeRef} style={{ display: 'inline-block' }}>
+            {/* Pill Badge with Scramble on Hover */}
+            <div
+              ref={badgeRef}
+              style={{ display: 'inline-block' }}
+              onMouseEnter={() => {
+                if (badgeTextRef.current) {
+                  scrambleText(badgeTextRef.current, 'Next-Gen Applied Neural Architecture', 0.6);
+                }
+              }}
+            >
               <div className="section-badge">
                 <span className="section-badge-dot" />
-                <span>Next-Gen Applied Neural Architecture</span>
+                <span ref={badgeTextRef}>Next-Gen Applied Neural Architecture</span>
               </div>
             </div>
 
-            {/* Headline with Staggered Split Words */}
+            {/* Headline with Masked Character Stagger & Hover Kinetic Wave */}
             <h1
               ref={headlineRef}
               style={{
@@ -147,6 +175,7 @@ export default function Hero({ lenisRef }) {
                 letterSpacing: '-0.035em',
                 marginBottom: '24px',
                 color: '#EDEDED',
+                perspective: '1000px',
               }}
             >
               {headlineWords.map((word, i) => {
@@ -161,16 +190,22 @@ export default function Hero({ lenisRef }) {
                       verticalAlign: 'top',
                     }}
                   >
-                    <span
-                      className="hero-word-inner"
-                      style={{
-                        display: 'inline-block',
-                        color: isGreen ? 'var(--green)' : '#EDEDED',
-                        textShadow: isGreen ? '0 0 35px rgba(214, 168, 79, 0.45)' : 'none',
-                      }}
-                    >
-                      {word}
-                    </span>
+                    {word.split('').map((char, charIdx) => (
+                      <span
+                        key={charIdx}
+                        className="hero-char"
+                        onMouseEnter={handleCharHover}
+                        style={{
+                          display: 'inline-block',
+                          color: isGreen ? 'var(--green)' : '#EDEDED',
+                          textShadow: isGreen ? '0 0 35px rgba(214, 168, 79, 0.45)' : 'none',
+                          cursor: 'default',
+                          transition: 'color 0.2s ease',
+                        }}
+                      >
+                        {char}
+                      </span>
+                    ))}
                   </span>
                 );
               })}

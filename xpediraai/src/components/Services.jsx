@@ -12,6 +12,12 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
+import {
+  useHeadingReveal,
+  useParagraphHighlight,
+  scrambleText,
+} from '../hooks/useAdvancedAnimations';
+
 gsap.registerPlugin(ScrollTrigger);
 
 const SERVICES_DATA = [
@@ -309,30 +315,43 @@ function ServiceCard({ item }) {
 
 export default function Services() {
   const containerRef = useRef(null);
+  const headingRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const badgeTextRef = useRef(null);
+
+  // Advanced heading blur-to-sharp reveal
+  useHeadingReveal(headingRef, { blur: 12, stagger: 0.02, start: 'top 82%' });
+
+  // Paragraph word-by-word scrub highlight
+  useParagraphHighlight(subtitleRef, { start: 'top 85%', end: 'bottom 65%' });
 
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.service-card'], {
+        gsap.set(['.section-badge', '.service-card'], {
           opacity: 1,
           y: 0,
         });
         return;
       }
 
-      // Staggered header reveal
+      // Initial badge scramble
+      if (badgeTextRef.current) {
+        scrambleText(badgeTextRef.current, 'What We Do', 0.8);
+      }
+
+      // Badge entrance
       gsap.fromTo(
-        '.section-badge, .section-title, .section-subtitle',
-        { y: 35, opacity: 0 },
+        '.section-badge',
+        { y: 24, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.1,
-          duration: 0.9,
+          duration: 0.75,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 82%',
+            start: 'top 85%',
           },
         }
       );
@@ -363,16 +382,23 @@ export default function Services() {
       <div className="section-container">
         {/* Header */}
         <div style={{ maxWidth: '680px', marginBottom: '64px' }}>
-          <div className="section-badge">
+          <div
+            className="section-badge"
+            onMouseEnter={() => {
+              if (badgeTextRef.current) {
+                scrambleText(badgeTextRef.current, 'What We Do', 0.5);
+              }
+            }}
+          >
             <span className="section-badge-dot" />
-            <span>What We Do</span>
+            <span ref={badgeTextRef}>What We Do</span>
           </div>
 
-          <h2 className="section-title">
+          <h2 ref={headingRef} className="section-title">
             Engineered For <span className="text-gradient-green">Autonomous Impact</span>
           </h2>
 
-          <p className="section-subtitle">
+          <p ref={subtitleRef} className="section-subtitle">
             From foundational mathematical design to low-latency edge deployment, our
             systems are purpose-built to solve high-stakes enterprise bottlenecks.
           </p>

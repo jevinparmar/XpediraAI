@@ -17,10 +17,19 @@ import {
   AlertCircle,
 } from 'lucide-react';
 
+import {
+  useHeadingReveal,
+  useParagraphHighlight,
+  scrambleText,
+} from '../hooks/useAdvancedAnimations';
+
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const containerRef = useRef(null);
+  const headingRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const badgeTextRef = useRef(null);
   const formRef = useRef(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -94,29 +103,39 @@ export default function Contact() {
     }
   };
 
+  // Advanced heading blur-to-sharp reveal
+  useHeadingReveal(headingRef, { blur: 12, stagger: 0.02, start: 'top 82%' });
+
+  // Paragraph word-by-word scrub highlight
+  useParagraphHighlight(subtitleRef, { start: 'top 85%', end: 'bottom 65%' });
+
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.contact-fade'], {
+        gsap.set(['.section-badge', '.contact-fade'], {
           opacity: 1,
           y: 0,
         });
         return;
       }
 
-      // Header reveal
+      // Initial badge scramble
+      if (badgeTextRef.current) {
+        scrambleText(badgeTextRef.current, "Let's Build Together", 0.8);
+      }
+
+      // Badge entrance
       gsap.fromTo(
-        '.section-badge, .section-title, .section-subtitle',
-        { y: 35, opacity: 0 },
+        '.section-badge',
+        { y: 24, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.1,
-          duration: 0.9,
+          duration: 0.7,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 82%',
+            start: 'top 85%',
           },
         }
       );
@@ -147,16 +166,21 @@ export default function Contact() {
       <div className="section-container">
         {/* Header */}
         <div style={{ maxWidth: '680px', marginBottom: '56px' }}>
-          <div className="section-badge">
+          <div
+            className="section-badge"
+            onMouseEnter={() => {
+              if (badgeTextRef.current) scrambleText(badgeTextRef.current, "Let's Build Together", 0.5);
+            }}
+          >
             <span className="section-badge-dot" />
-            <span>Let's Build Together</span>
+            <span ref={badgeTextRef}>Let's Build Together</span>
           </div>
 
-          <h2 className="section-title">
+          <h2 ref={headingRef} className="section-title">
             Initiate An <span className="text-gradient-green">Architecture Briefing</span>
           </h2>
 
-          <p className="section-subtitle">
+          <p ref={subtitleRef} className="section-subtitle">
             Whether deploying autonomous agent swarms, fine-tuning custom foundation weights,
             or architecting zero-trust RAG systems, our research team is ready.
           </p>

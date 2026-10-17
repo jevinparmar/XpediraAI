@@ -69,6 +69,21 @@ export default function App() {
           scrub: 1.0,
         },
       });
+      // Luxury scroll progress indicator
+      gsap.fromTo(
+        '.scroll-progress-bar',
+        { scaleX: 0, transformOrigin: 'left center' },
+        {
+          scaleX: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: document.documentElement,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.15,
+          },
+        }
+      );
     },
     { scope: mainRef }
   );
@@ -87,6 +102,25 @@ export default function App() {
   return (
     <SmoothScroll>
       <div className="app-container" ref={mainRef}>
+        {/* Luxury Top Scroll Progress Bar */}
+        <div
+          className="scroll-progress-bar"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '3px',
+            background: 'linear-gradient(90deg, #D6A84F, #FFE7B3, #D6A84F)',
+            boxShadow: '0 0 12px rgba(214, 168, 79, 0.8), 0 0 4px rgba(255, 255, 255, 0.9)',
+            zIndex: 99998,
+            pointerEvents: 'none',
+            transformOrigin: 'left center',
+            transform: 'scaleX(0)',
+          }}
+          aria-hidden="true"
+        />
+
         {/* Full-Bleed Cyber Square Grid with Interactive Cursor Spotlight */}
         <SquaresBackground />
 

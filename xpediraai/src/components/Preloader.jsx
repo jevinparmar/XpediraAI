@@ -16,6 +16,7 @@ const COMET_TAIL_PATH =
 export default function Preloader({ onComplete }) {
   const containerRef = useRef(null);
   const contentRef = useRef(null);
+  const counterRef = useRef(null);
 
   useEffect(() => {
     // If reduced motion is preferred, complete quickly
@@ -24,29 +25,47 @@ export default function Preloader({ onComplete }) {
       return;
     }
 
-    // 2-second loading sequence
+    const counterObj = { val: 0 };
+
+    // Master loading & curtain reveal sequence
     const tl = gsap.timeline({
-      delay: 2.0,
       onComplete: () => {
         if (onComplete) onComplete();
       },
     });
 
-    // Content fade & slight scale down
-    tl.to(contentRef.current, {
-      opacity: 0,
-      scale: 0.95,
-      duration: 0.35,
-      ease: 'power3.in',
+    // 1. Digital roll-up counter 0% -> 100%
+    tl.to(counterObj, {
+      val: 100,
+      duration: 1.6,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        if (counterRef.current) {
+          counterRef.current.innerText = `${Math.round(counterObj.val)}%`;
+        }
+      },
     });
 
-    // Main preloader curtain fade out
+    // 2. Content fade & slight upward elevation
+    tl.to(
+      contentRef.current,
+      {
+        opacity: 0,
+        y: -18,
+        scale: 0.96,
+        duration: 0.4,
+        ease: 'power3.in',
+      },
+      '+=0.15'
+    );
+
+    // 3. Main preloader curtain clip-path wipe upward
     tl.to(
       containerRef.current,
       {
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power3.out',
+        clipPath: 'inset(0% 0% 100% 0%)',
+        duration: 0.85,
+        ease: 'expo.inOut',
       },
       '-=0.15'
     );
@@ -64,6 +83,7 @@ export default function Preloader({ onComplete }) {
         inset: 0,
         zIndex: 100000,
         backgroundColor: '#111827',
+        clipPath: 'inset(0% 0% 0% 0%)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -176,6 +196,23 @@ export default function Preloader({ onComplete }) {
               animation: 'pulseGlow 1.5s ease-in-out infinite',
             }}
           />
+        </div>
+
+        {/* Animated Digital Progress Counter */}
+        <div
+          ref={counterRef}
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: '0.95rem',
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            color: 'var(--green)',
+            marginTop: '16px',
+            fontVariantNumeric: 'tabular-nums',
+            textShadow: '0 0 12px rgba(214, 168, 79, 0.55)',
+          }}
+        >
+          0%
         </div>
       </div>
 

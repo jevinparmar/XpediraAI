@@ -3,6 +3,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { IconLinkedin, IconGithub, IconTwitter } from './Icons';
+import {
+  useHeadingReveal,
+  useParagraphHighlight,
+  scrambleText,
+} from '../hooks/useAdvancedAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,30 +24,45 @@ const TEAM_MEMBERS = [
 
 export default function Team() {
   const containerRef = useRef(null);
+  const headingRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const badgeTextRef = useRef(null);
+  const portraitWrapRef = useRef(null);
+  const imageRef = useRef(null);
+
+  // Advanced heading blur-to-sharp reveal
+  useHeadingReveal(headingRef, { blur: 12, stagger: 0.02, start: 'top 82%' });
+
+  // Paragraph word-by-word scrub highlight
+  useParagraphHighlight(subtitleRef, { start: 'top 85%', end: 'bottom 65%' });
 
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.team-member-card'], {
+        gsap.set(['.section-badge', '.team-member-card'], {
           opacity: 1,
           y: 0,
         });
         return;
       }
 
-      // Header reveal
+      // Initial badge scramble
+      if (badgeTextRef.current) {
+        scrambleText(badgeTextRef.current, 'Leadership', 0.8);
+      }
+
+      // Badge entrance
       gsap.fromTo(
-        '.section-badge, .section-title, .section-subtitle',
-        { y: 35, opacity: 0 },
+        '.section-badge',
+        { y: 24, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.1,
-          duration: 0.9,
+          duration: 0.75,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 82%',
+            start: 'top 85%',
           },
         }
       );
@@ -63,6 +83,49 @@ export default function Team() {
           },
         }
       );
+
+      // Cinematic Image Reveal: clipPath inset wipe + inner scale 1.25 -> 1.0 + subtle parallax
+      if (portraitWrapRef.current && imageRef.current) {
+        gsap.fromTo(
+          portraitWrapRef.current,
+          { clipPath: 'inset(100% 0% 0% 0%)' },
+          {
+            clipPath: 'inset(0% 0% 0% 0%)',
+            duration: 1.2,
+            ease: 'expo.inOut',
+            scrollTrigger: {
+              trigger: portraitWrapRef.current,
+              start: 'top 80%',
+            },
+          }
+        );
+
+        gsap.fromTo(
+          imageRef.current,
+          { scale: 1.25 },
+          {
+            scale: 1.0,
+            duration: 1.2,
+            ease: 'expo.out',
+            scrollTrigger: {
+              trigger: portraitWrapRef.current,
+              start: 'top 80%',
+            },
+          }
+        );
+
+        // Gentle parallax scrub on the portrait as user glides
+        gsap.to(imageRef.current, {
+          yPercent: 8,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: portraitWrapRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.0,
+          },
+        });
+      }
     },
     { scope: containerRef }
   );
@@ -81,16 +144,23 @@ export default function Team() {
             alignItems: 'center',
           }}
         >
-          <div className="section-badge">
+          <div
+            className="section-badge"
+            onMouseEnter={() => {
+              if (badgeTextRef.current) {
+                scrambleText(badgeTextRef.current, 'Leadership', 0.5);
+              }
+            }}
+          >
             <span className="section-badge-dot" />
-            <span>Leadership</span>
+            <span ref={badgeTextRef}>Leadership</span>
           </div>
 
-          <h2 className="section-title">
+          <h2 ref={headingRef} className="section-title">
             Architect of <span className="text-gradient-green">Applied Intelligence</span>
           </h2>
 
-          <p className="section-subtitle" style={{ margin: '0 auto' }}>
+          <p ref={subtitleRef} className="section-subtitle" style={{ margin: '0 auto' }}>
             Visionary leadership driving Xpedira AI's mission to engineer high-performance autonomous agents,
             enterprise infrastructure, and next-generation AI systems.
           </p>
@@ -144,8 +214,9 @@ export default function Team() {
                 }
               }}
             >
-              {/* Portrait Container */}
+              {/* Portrait Container with Cinematic Reveal */}
               <div
+                ref={portraitWrapRef}
                 style={{
                   position: 'relative',
                   width: '100%',
@@ -155,6 +226,7 @@ export default function Team() {
                 }}
               >
                 <img
+                  ref={imageRef}
                   src={member.image}
                   alt={member.name}
                   className="team-avatar-img"

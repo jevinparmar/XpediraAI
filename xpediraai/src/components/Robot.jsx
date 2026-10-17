@@ -1,23 +1,26 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useGLTF, Center } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 // ── Configuration Constants ──
 const MAX_HEAD_TURN_Y = 0.55; // Max horizontal head turn in radians (~31° left/right)
 const MAX_HEAD_TURN_X = 0.45; // Max vertical head tilt in radians (~25° up/down)
 const MAX_EYE_OFFSET = 0.055; // Max sliding distance for eyes on black screen
-const LERP_FACTOR = 0.08; // Smooth interpolation speed
+const LERP_FACTOR = 0.075; // Organic, damped interpolation speed
 const BLINK_INTERVAL = 2.0; // Blink interval in seconds
 const BLINK_DURATION = 0.16; // Blink duration in seconds (~160ms)
 
 /**
- * Interactive 3D Cute Robot Component for Xpedira AI.
- * - Tracks cursor globally (-1..+1) on window with smooth lerped easing.
- * - Rotates head toward cursor.
- * - Slides eyes horizontally (local Z) and vertically (local Y) on the screen.
- * - Human-like eye blink every 2.0 seconds using native GLTF morph targets.
- * - Uses Champagne Gold (#D6A84F) and Dark Slate (#111827) styling.
+ * Advanced Interactive 3D Cute Robot Component for Xpedira AI.
+ * - Smooth intro scale-up and floating elevation.
+ * - Continuous natural idle floating and breathing micro-rotation.
+ * - Responsive cursor tracking with damped organic lerp.
+ * - Interactive hover perk & click 360° spin reaction.
+ * - Scroll-driven downward gaze guiding the user to lower sections.
+ * - Native GLTF morph target blinking.
+ * - Champagne Gold (#D6A84F) & Deep Navy Slate (#111827) cyber materials.
  */
 export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
   const groupRef = useRef();
@@ -28,6 +31,13 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
   const eye1BasePos = useRef(null);
   const eye2BasePos = useRef(null);
   const eyeOffsetRef = useRef({ y: 0, z: 0 });
+
+  // Interactive reaction states
+  const [isHovered, setIsHovered] = useState(false);
+  const spinAngleRef = useRef(0);
+  const isSpinningRef = useRef(false);
+  const currentScaleRef = useRef(0.2); // Starts small for intro scale-in
+  const scrollGazeRef = useRef(0);
 
   const { scene } = useGLTF('/models/cute_robot.glb');
 
@@ -46,12 +56,22 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
       mouseRef.current.y = 0;
     };
 
+    // Scroll-driven reaction: track scroll down to angle robot toward content
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const heroHeight = window.innerHeight;
+      const progress = Math.min(1, Math.max(0, scrollY / heroHeight));
+      scrollGazeRef.current = progress * 0.35; // Slight downward gaze as user scrolls down
+    };
+
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
     document.addEventListener('pointerleave', handlePointerLeave);
     document.addEventListener('mouseleave', handlePointerLeave);
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('pointerleave', handlePointerLeave);
       document.removeEventListener('mouseleave', handlePointerLeave);
     };
@@ -93,7 +113,7 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
           ) {
             child.material.color = new THREE.Color('#D6A84F');
             child.material.emissive = new THREE.Color('#D6A84F');
-            child.material.emissiveIntensity = 3.5;
+            child.material.emissiveIntensity = isHovered ? 5.0 : 3.5;
             child.material.roughness = 0.05;
           }
           // Screen face: deep navy slate glass (#111827)
@@ -113,7 +133,7 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
           ) {
             child.material.color = new THREE.Color('#D6A84F');
             child.material.emissive = new THREE.Color('#D6A84F');
-            child.material.emissiveIntensity = 2.2;
+            child.material.emissiveIntensity = isHovered ? 3.0 : 2.2;
           }
           // Main body: sleek titanium cyber finish
           else if (matName === 'BODY') {
@@ -140,18 +160,62 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
         eye2BasePos.current = { x: eye2.position.x, y: eye2.position.y, z: eye2.position.z };
       }
     }
-  }, [scene]);
+  }, [scene, isHovered]);
 
-  // 3. Animation frame loop
+  // Click reaction: 360° spin with playful bounce
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (isSpinningRef.current) return;
+    isSpinningRef.current = true;
+
+    const spinObj = { angle: 0, bounceY: 0 };
+    gsap.to(spinObj, {
+      angle: Math.PI * 2,
+      duration: 1.15,
+      ease: 'power3.out',
+      onUpdate: () => {
+        spinAngleRef.current = spinObj.angle;
+      },
+      onComplete: () => {
+        spinAngleRef.current = 0;
+        isSpinningRef.current = false;
+      },
+    });
+
+    // Small celebratory bounce
+    if (groupRef.current) {
+      gsap.to(groupRef.current.position, {
+        y: position[1] + 0.18,
+        duration: 0.35,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power2.out',
+      });
+    }
+  };
+
+  // 3. Animation frame loop (Continuous idle floating + damped cursor tracking + blink + spin)
   useFrame((state) => {
-    if (!innerRef.current) return;
+    if (!innerRef.current || !groupRef.current) return;
 
+    const time = state.clock.elapsedTime;
     const mx = mouseRef.current.x;
     const my = mouseRef.current.y;
 
-    // Head rotation toward cursor (smoothed with lerp)
-    const targetHeadRotY = mx * MAX_HEAD_TURN_Y;
-    const targetHeadRotX = -my * MAX_HEAD_TURN_X;
+    // Smooth intro scale-in
+    currentScaleRef.current = THREE.MathUtils.lerp(currentScaleRef.current, scale, 0.05);
+    groupRef.current.scale.setScalar(currentScaleRef.current);
+
+    // Natural idle floating: sine wave vertical glide
+    const idleY = Math.sin(time * 1.8) * 0.05;
+    const idleRoll = Math.cos(time * 1.4) * 0.02;
+
+    groupRef.current.position.y = position[1] + idleY;
+
+    // Target head rotation toward cursor + scroll gaze + hover perk
+    const hoverTiltX = isHovered ? -0.12 : 0;
+    const targetHeadRotY = mx * MAX_HEAD_TURN_Y + spinAngleRef.current;
+    const targetHeadRotX = -my * MAX_HEAD_TURN_X + scrollGazeRef.current + hoverTiltX;
 
     innerRef.current.rotation.y = THREE.MathUtils.lerp(
       innerRef.current.rotation.y,
@@ -163,9 +227,14 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
       targetHeadRotX,
       LERP_FACTOR
     );
+    innerRef.current.rotation.z = THREE.MathUtils.lerp(
+      innerRef.current.rotation.z,
+      idleRoll - mx * 0.06,
+      LERP_FACTOR
+    );
 
     // Natural human blink every 2.0 seconds (~160ms duration)
-    const blinkCycle = state.clock.elapsedTime % BLINK_INTERVAL;
+    const blinkCycle = time % BLINK_INTERVAL;
     let blinkWeight = 0;
     if (blinkCycle < BLINK_DURATION) {
       const progress = blinkCycle / BLINK_DURATION;
@@ -181,9 +250,9 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
     }
 
     // Slide eyes along screen face:
-    // In the robot's local coordinates, Z is horizontal (left/right) and Y is vertical (up/down)
+    // In robot local coordinates, Z is horizontal (left/right) and Y is vertical (up/down)
     const targetOffsetZ = -mx * MAX_EYE_OFFSET;
-    const targetOffsetY = my * MAX_EYE_OFFSET;
+    const targetOffsetY = (my * MAX_EYE_OFFSET) - (scrollGazeRef.current * 0.08);
 
     eyeOffsetRef.current.z = THREE.MathUtils.lerp(
       eyeOffsetRef.current.z,
@@ -207,13 +276,21 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
   });
 
   return (
-    <group ref={groupRef} position={position}>
+    <group
+      ref={groupRef}
+      position={position}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setIsHovered(true);
+      }}
+      onPointerOut={() => setIsHovered(false)}
+      onClick={handleClick}
+    >
       <group ref={innerRef}>
         <Center>
           {/* Base rotation -Math.PI / 2 aligns raw +X screen normal directly forward toward camera (+Z) */}
           <primitive
             object={scene}
-            scale={scale}
             rotation={[0, -Math.PI / 2, 0]}
           />
         </Center>

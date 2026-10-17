@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Footer({ lenisRef }) {
   const containerRef = useRef(null);
+  const bigTextRef = useRef(null);
 
   const scrollToTop = () => {
     const activeLenis = window.lenis || (lenisRef && lenisRef.current?.lenis) || lenisRef?.current;
@@ -22,7 +23,7 @@ export default function Footer({ lenisRef }) {
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set(['.footer-divider-glow', '.footer-grid > div'], {
+        gsap.set(['.footer-divider-glow', '.footer-grid > div', '.footer-big-text'], {
           opacity: 1,
           scaleX: 1,
           y: 0,
@@ -62,6 +63,25 @@ export default function Footer({ lenisRef }) {
           },
         }
       );
+
+      // Big-text footer cinematic reveal
+      if (bigTextRef.current) {
+        gsap.fromTo(
+          bigTextRef.current,
+          { y: 50, opacity: 0, scale: 0.95 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1.2,
+            ease: 'power4.out',
+            scrollTrigger: {
+              trigger: bigTextRef.current,
+              start: 'top 95%',
+            },
+          }
+        );
+      }
     },
     { scope: containerRef }
   );
@@ -333,6 +353,28 @@ export default function Footer({ lenisRef }) {
               </ul>
             </div>
           </div>
+        </div>
+
+        {/* Cinematic Big Text Watermark Reveal */}
+        <div
+          ref={bigTextRef}
+          className="footer-big-text"
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: 'clamp(2.5rem, 9.5vw, 7.5rem)',
+            fontWeight: 800,
+            letterSpacing: '0.04em',
+            textAlign: 'center',
+            lineHeight: 1,
+            margin: '36px 0 24px',
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(214, 168, 79, 0.03) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        >
+          XPEDIRA AI
         </div>
 
         {/* Bottom Bar */}

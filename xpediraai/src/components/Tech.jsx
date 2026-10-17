@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import gsap from 'gsap';
@@ -14,6 +14,11 @@ import {
   Sparkles,
   CheckCircle2,
 } from 'lucide-react';
+import {
+  useHeadingReveal,
+  useParagraphHighlight,
+  scrambleText,
+} from '../hooks/useAdvancedAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -184,30 +189,64 @@ function Secondary3DOrbit() {
 
 export default function Tech() {
   const containerRef = useRef(null);
+  const headingRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const badgeTextRef = useRef(null);
+
+  // Advanced heading blur-to-sharp reveal
+  useHeadingReveal(headingRef, { blur: 12, stagger: 0.02, start: 'top 82%' });
+
+  // Paragraph word-by-word scrub highlight
+  useParagraphHighlight(subtitleRef, { start: 'top 85%', end: 'bottom 65%' });
+
+  // Infinite marquee speed reacts dynamically to Lenis scroll velocity
+  useEffect(() => {
+    const activeLenis = window.lenis;
+    if (!activeLenis) return;
+
+    const handleScroll = ({ velocity }) => {
+      const absVel = Math.min(Math.abs(velocity || 0), 12);
+      const speedMultiplier = 1 + absVel * 0.18;
+      const duration = 36 / speedMultiplier;
+      const tracks = document.querySelectorAll('.marquee-track');
+      tracks.forEach((track) => {
+        track.style.animationDuration = `${duration}s`;
+      });
+    };
+
+    activeLenis.on('scroll', handleScroll);
+    return () => {
+      activeLenis.off('scroll', handleScroll);
+    };
+  }, []);
 
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.tech-core-card', '.tech-bottom-banner'], {
+        gsap.set(['.section-badge', '.tech-core-card', '.tech-bottom-banner'], {
           opacity: 1,
           y: 0,
         });
         return;
       }
 
-      // Header reveal
+      // Initial badge scramble
+      if (badgeTextRef.current) {
+        scrambleText(badgeTextRef.current, 'Our Technology Stack', 0.8);
+      }
+
+      // Header badge reveal
       gsap.fromTo(
-        '.section-badge, .section-title, .section-subtitle',
-        { y: 35, opacity: 0 },
+        '.section-badge',
+        { y: 24, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.1,
-          duration: 0.9,
+          duration: 0.75,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 82%',
+            start: 'top 85%',
           },
         }
       );
@@ -255,16 +294,23 @@ export default function Tech() {
       <div className="section-container">
         {/* Header */}
         <div style={{ maxWidth: '780px', marginBottom: '52px' }}>
-          <div className="section-badge">
+          <div
+            className="section-badge"
+            onMouseEnter={() => {
+              if (badgeTextRef.current) {
+                scrambleText(badgeTextRef.current, 'Our Technology Stack', 0.5);
+              }
+            }}
+          >
             <span className="section-badge-dot" />
-            <span>Our Technology Stack</span>
+            <span ref={badgeTextRef}>Our Technology Stack</span>
           </div>
 
-          <h2 className="section-title">
+          <h2 ref={headingRef} className="section-title">
             Built with <span className="text-gradient-green">Trusted Technology</span>
           </h2>
 
-          <p className="section-subtitle">
+          <p ref={subtitleRef} className="section-subtitle">
             Modern tools chosen for performance, security, and long-term maintainability.
           </p>
         </div>
