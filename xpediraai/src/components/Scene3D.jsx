@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Float, Environment } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 import Robot from './Robot';
 
@@ -177,19 +177,18 @@ export default function Scene3D() {
         }}
         style={{ width: '100%', height: '100%' }}
       >
-        {/* Cinematic Lighting System */}
-        <ambientLight intensity={0.75} color="#FFFFFF" />
-        <directionalLight position={[5, 6, 5]} intensity={2.2} color="#FFFFFF" />
+        {/* Cinematic Lighting System tailored to Gold & Slate palette */}
+        <ambientLight intensity={0.8} color="#FFFFFF" />
+        <directionalLight position={[5, 6, 5]} intensity={2.4} color="#FFFFFF" />
         {/* Champagne Gold Rim Light */}
         <directionalLight position={[-5, -2, -3]} intensity={4.5} color="#D6A84F" />
         {/* Soft Secondary Fill Lights */}
-        <pointLight position={[2, -3, 2]} intensity={1.5} color="#E6C275" />
-        <pointLight position={[0, 4, 2]} intensity={1.0} color="#FFFFFF" />
-        <pointLight position={[0, -2, 3]} intensity={0.6} color="#D6A84F" />
+        <pointLight position={[2, -3, 2]} intensity={1.8} color="#E6C275" />
+        <pointLight position={[0, 4, 2]} intensity={1.2} color="#FFFFFF" />
+        <pointLight position={[0, -2, 3]} intensity={0.8} color="#D6A84F" />
 
         <Suspense fallback={<Loader3D />}>
           <InteractiveScene />
-          <Environment preset="city" environmentIntensity={0.3} />
         </Suspense>
       </Canvas>
     </div>

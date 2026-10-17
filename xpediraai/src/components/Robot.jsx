@@ -3,28 +3,32 @@ import { useGLTF, Center } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// ── Configuration Constants (Tweakable) ──
-const MAX_HEAD_TURN_Y = 0.6; // Max horizontal head turn in radians (~34.4° left/right)
-const MAX_HEAD_TURN_X = 0.6; // Max vertical head tilt in radians (~34.4° up/down)
-const MAX_EYE_OFFSET = 0.12; // Max sliding distance for eyes on black screen (units)
-const LERP_FACTOR = 0.08; // Smoothing factor (0.08 = soft, natural motion)
-const BLINK_INTERVAL = 2.0; // Human blink every 2.0 seconds
-const BLINK_DURATION = 0.16; // Duration of human blink in seconds (~160ms)
+// ── Configuration Constants ──
+const MAX_HEAD_TURN_Y = 0.55; // Max horizontal head turn in radians (~31° left/right)
+const MAX_HEAD_TURN_X = 0.45; // Max vertical head tilt in radians (~25° up/down)
+const MAX_EYE_OFFSET = 0.055; // Max sliding distance for eyes on black screen
+const LERP_FACTOR = 0.08; // Smooth interpolation speed
+const BLINK_INTERVAL = 2.0; // Blink interval in seconds
+const BLINK_DURATION = 0.16; // Blink duration in seconds (~160ms)
 
 /**
  * Interactive 3D Cute Robot Component for Xpedira AI.
- * - Round teal ring-shaped head with black screen and two white/neon-green pill eyes.
- * - Tracks cursor globally (-1..+1) on window with pointer events (touch-compatible).
- * - Smoothly rotates head toward cursor (rot.y follows mouse.x, rot.x follows -mouse.y).
- * - Slides both eyes together as a grouped unit on the black screen (pos.x & pos.y clamped to 0.12).
- * - Smoothly resets to center when cursor leaves the window.
- * - Human-like eye blink every 2.0 seconds (morph targets + scale.y).
+ * - Tracks cursor globally (-1..+1) on window with smooth lerped easing.
+ * - Rotates head toward cursor.
+ * - Slides eyes horizontally (local Z) and vertically (local Y) on the screen.
+ * - Human-like eye blink every 2.0 seconds using native GLTF morph targets.
+ * - Uses Champagne Gold (#D6A84F) and Dark Slate (#111827) styling.
  */
 export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
   const groupRef = useRef();
   const innerRef = useRef();
-  const eyesSliderRef = useRef();
   const eyeMeshesRef = useRef([]);
+  const eye1Ref = useRef(null);
+  const eye2Ref = useRef(null);
+  const eye1BasePos = useRef(null);
+  const eye2BasePos = useRef(null);
+  const eyeOffsetRef = useRef({ y: 0, z: 0 });
+
   const { scene } = useGLTF('/models/cute_robot.glb');
 
   // Track normalized cursor coordinates (-1..+1)
@@ -53,13 +57,12 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
     };
   }, []);
 
-  // 2. Setup materials, eyes grouping under a single slider parent & eye mesh collection
+  // 2. Setup materials, identify eyes and preserve initial base positions
   useEffect(() => {
     if (!scene) return;
 
     eyeMeshesRef.current = [];
 
-    // Apply materials and locate eye meshes
     scene.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true;
@@ -112,7 +115,7 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
             child.material.emissive = new THREE.Color('#D6A84F');
             child.material.emissiveIntensity = 2.2;
           }
-          // Main body: sleek titanium-black cyber finish
+          // Main body: sleek titanium cyber finish
           else if (matName === 'BODY') {
             child.material.metalness = 0.65;
             child.material.roughness = 0.3;
@@ -121,35 +124,25 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
       }
     });
 
-    // Group the two separate eye objects under a single parent slider group
-    // In Three.js GLTFLoader, dot in "Plane.001_3" is sanitized to "Plane001_3"
+    // Locate the two eye parent nodes
     const eye1 = scene.getObjectByName('Plane_2');
     const eye2 = scene.getObjectByName('Plane001_3') || scene.getObjectByName('Plane.001_3');
 
-    if (eye1 && eye2 && eye1.parent && !eyesSliderRef.current) {
-      const parent = eye1.parent;
-
-      // Group that aligns with front face coordinates
-      const eyesGroup = new THREE.Group();
-      eyesGroup.name = 'EyesAnchorGroup';
-      eyesGroup.position.set(0.47284, 1.23455, -0.00079);
-      eyesGroup.rotation.set(0, -Math.PI / 2, 0);
-      parent.add(eyesGroup);
-
-      // Slider group for position.x / position.y sliding and scale.y blinking
-      const eyesSlider = new THREE.Group();
-      eyesSlider.name = 'EyesSliderGroup';
-      eyesGroup.add(eyesSlider);
-
-      // Attach both eyes to maintain their exact visual appearance & world transform
-      eyesSlider.attach(eye1);
-      eyesSlider.attach(eye2);
-
-      eyesSliderRef.current = eyesSlider;
+    if (eye1) {
+      eye1Ref.current = eye1;
+      if (!eye1BasePos.current) {
+        eye1BasePos.current = { x: eye1.position.x, y: eye1.position.y, z: eye1.position.z };
+      }
+    }
+    if (eye2) {
+      eye2Ref.current = eye2;
+      if (!eye2BasePos.current) {
+        eye2BasePos.current = { x: eye2.position.x, y: eye2.position.y, z: eye2.position.z };
+      }
     }
   }, [scene]);
 
-  // 3. Animation loop: Smooth lerped head rotation + eye sliding + human blink every 2s
+  // 3. Animation frame loop
   useFrame((state) => {
     if (!innerRef.current) return;
 
@@ -171,16 +164,15 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
       LERP_FACTOR
     );
 
-    // Natural human blink every 2.0 seconds (~160ms blink duration)
+    // Natural human blink every 2.0 seconds (~160ms duration)
     const blinkCycle = state.clock.elapsedTime % BLINK_INTERVAL;
-    let blinkWeight = 0; // 0 = open, 1 = fully closed
+    let blinkWeight = 0;
     if (blinkCycle < BLINK_DURATION) {
       const progress = blinkCycle / BLINK_DURATION;
-      // Smooth sinusoidal eyelid close & open curve
       blinkWeight = Math.sin(progress * Math.PI);
     }
 
-    // Drive native 3D morph targets on eye meshes (mesh_2, mesh_3)
+    // Drive native morph targets on eye meshes (mesh_2, mesh_3)
     for (let i = 0; i < eyeMeshesRef.current.length; i++) {
       const mesh = eyeMeshesRef.current[i];
       if (mesh && mesh.morphTargetInfluences) {
@@ -188,24 +180,29 @@ export default function Robot({ scale = 0.95, position = [0, -0.05, 0] }) {
       }
     }
 
-    // Eyes sliding on the screen toward cursor + vertical eyelid compression
-    if (eyesSliderRef.current) {
-      const targetEyeX = THREE.MathUtils.clamp(mx * MAX_EYE_OFFSET, -MAX_EYE_OFFSET, MAX_EYE_OFFSET);
-      const targetEyeY = THREE.MathUtils.clamp(my * MAX_EYE_OFFSET, -MAX_EYE_OFFSET, MAX_EYE_OFFSET);
+    // Slide eyes along screen face:
+    // In the robot's local coordinates, Z is horizontal (left/right) and Y is vertical (up/down)
+    const targetOffsetZ = -mx * MAX_EYE_OFFSET;
+    const targetOffsetY = my * MAX_EYE_OFFSET;
 
-      eyesSliderRef.current.position.x = THREE.MathUtils.lerp(
-        eyesSliderRef.current.position.x,
-        targetEyeX,
-        LERP_FACTOR
-      );
-      eyesSliderRef.current.position.y = THREE.MathUtils.lerp(
-        eyesSliderRef.current.position.y,
-        targetEyeY,
-        LERP_FACTOR
-      );
+    eyeOffsetRef.current.z = THREE.MathUtils.lerp(
+      eyeOffsetRef.current.z,
+      targetOffsetZ,
+      LERP_FACTOR
+    );
+    eyeOffsetRef.current.y = THREE.MathUtils.lerp(
+      eyeOffsetRef.current.y,
+      targetOffsetY,
+      LERP_FACTOR
+    );
 
-      // Scale Y down to 0.05 during peak blink for prominent visual closure
-      eyesSliderRef.current.scale.y = 1.0 - blinkWeight * 0.95;
+    if (eye1Ref.current && eye1BasePos.current) {
+      eye1Ref.current.position.z = eye1BasePos.current.z + eyeOffsetRef.current.z;
+      eye1Ref.current.position.y = eye1BasePos.current.y + eyeOffsetRef.current.y;
+    }
+    if (eye2Ref.current && eye2BasePos.current) {
+      eye2Ref.current.position.z = eye2BasePos.current.z + eyeOffsetRef.current.z;
+      eye2Ref.current.position.y = eye2BasePos.current.y + eyeOffsetRef.current.y;
     }
   });
 

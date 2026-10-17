@@ -76,31 +76,10 @@ export default function Hero({ lenisRef }) {
         '-=0.5'
       );
 
-      // 3D Canvas entrance
-      tl.fromTo(
-        '.hero-canvas-wrapper',
-        { opacity: 0, scale: 0.88, y: 30 },
-        { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'power3.out' },
-        '-=0.8'
-      );
-
-      // Subtle scroll parallax depth (content floats up smoothly as user scrolls down)
+      // Subtle scroll parallax depth on text content as user scrolls down
       gsap.to('.hero-left-content', {
-        y: -110,
-        opacity: 0.15,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.6,
-        },
-      });
-
-      gsap.to('.hero-canvas-wrapper', {
-        y: -70,
-        scale: 0.88,
-        opacity: 0.3,
+        y: -90,
+        opacity: 0.2,
         ease: 'none',
         scrollTrigger: {
           trigger: containerRef.current,
@@ -240,10 +219,12 @@ export default function Hero({ lenisRef }) {
             style={{
               position: 'relative',
               width: '100%',
-              height: '560px',
+              minHeight: '520px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              opacity: 1,
+              visibility: 'visible',
             }}
             className="hero-canvas-wrapper"
           >
@@ -254,7 +235,7 @@ export default function Hero({ lenisRef }) {
                 width: '460px',
                 height: '460px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(214, 168, 79, 0.22) 0%, rgba(11, 61, 42, 0.12) 50%, transparent 75%)',
+                background: 'radial-gradient(circle, rgba(214, 168, 79, 0.22) 0%, rgba(17, 24, 39, 0.35) 55%, transparent 75%)',
                 filter: 'blur(60px)',
                 pointerEvents: 'none',
               }}
@@ -266,12 +247,25 @@ export default function Hero({ lenisRef }) {
       </div>
 
       <style>{`
-        @media (min-width: 980px) {
+        @media (min-width: 820px) {
           .hero-grid {
             grid-template-columns: 1.05fr 0.95fr !important;
           }
           .hero-canvas-wrapper {
-            height: 680px !important;
+            height: 640px !important;
+          }
+        }
+        @media (max-width: 819px) {
+          .hero-grid {
+            grid-template-columns: 1fr !important;
+            text-align: center;
+          }
+          .hero-left-content {
+            margin: 0 auto;
+          }
+          .hero-canvas-wrapper {
+            height: 460px !important;
+            order: 2;
           }
         }
       `}</style>
