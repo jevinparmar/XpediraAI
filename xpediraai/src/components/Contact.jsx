@@ -97,7 +97,7 @@ export default function Contact() {
     const ctx = gsap.context(() => {
       // Header reveal
       gsap.fromTo(
-        '#contact .section-badge, #contact .section-title, #contact .section-subtitle',
+        '.section-badge, .section-title, .section-subtitle',
         { y: 30, opacity: 0 },
         {
           y: 0,
@@ -106,7 +106,7 @@ export default function Contact() {
           duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: '#contact',
+            trigger: containerRef.current,
             start: 'top 80%',
           },
         }

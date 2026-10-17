@@ -313,7 +313,7 @@ export default function Services() {
     const ctx = gsap.context(() => {
       // Staggered header reveal
       gsap.fromTo(
-        '#services .section-badge, #services .section-title, #services .section-subtitle',
+        '.section-badge, .section-title, .section-subtitle',
         { y: 30, opacity: 0 },
         {
           y: 0,
@@ -322,7 +322,7 @@ export default function Services() {
           duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: '#services',
+            trigger: containerRef.current,
             start: 'top 80%',
           },
         }
@@ -341,8 +341,8 @@ export default function Services() {
           duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: '.services-grid',
-            start: 'top 82%',
+            trigger: containerRef.current,
+            start: 'top 70%',
           },
         }
       );

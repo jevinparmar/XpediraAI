@@ -23,7 +23,7 @@ export default function Team() {
     const ctx = gsap.context(() => {
       // Header reveal
       gsap.fromTo(
-        '#team .section-badge, #team .section-title, #team .section-subtitle',
+        '.section-badge, .section-title, .section-subtitle',
         { y: 30, opacity: 0 },
         {
           y: 0,
@@ -32,7 +32,7 @@ export default function Team() {
           duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: '#team',
+            trigger: containerRef.current,
             start: 'top 80%',
           },
         }

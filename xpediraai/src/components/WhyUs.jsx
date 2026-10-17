@@ -102,7 +102,7 @@ export default function WhyUs() {
     const ctx = gsap.context(() => {
       // Header reveal
       gsap.fromTo(
-        '#why .section-badge, #why .section-title, #why .section-subtitle',
+        '.section-badge, .section-title, .section-subtitle',
         { y: 30, opacity: 0 },
         {
           y: 0,
@@ -111,7 +111,7 @@ export default function WhyUs() {
           duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: '#why',
+            trigger: containerRef.current,
             start: 'top 80%',
           },
         }

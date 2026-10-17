@@ -188,7 +188,7 @@ export default function Tech() {
     const ctx = gsap.context(() => {
       // Header reveal
       gsap.fromTo(
-        '#tech .section-badge, #tech .section-title, #tech .section-subtitle',
+        '.section-badge, .section-title, .section-subtitle',
         { y: 30, opacity: 0 },
         {
           y: 0,
@@ -197,7 +197,7 @@ export default function Tech() {
           duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: '#tech',
+            trigger: containerRef.current,
             start: 'top 80%',
           },
         }
