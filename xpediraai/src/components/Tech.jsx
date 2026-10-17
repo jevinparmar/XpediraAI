@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import {
   Smartphone,
   Globe,
@@ -184,21 +185,29 @@ function Secondary3DOrbit() {
 export default function Tech() {
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.tech-core-card', '.tech-bottom-banner'], {
+          opacity: 1,
+          y: 0,
+        });
+        return;
+      }
+
       // Header reveal
       gsap.fromTo(
         '.section-badge, .section-title, .section-subtitle',
-        { y: 30, opacity: 0 },
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.12,
-          duration: 0.85,
+          stagger: 0.1,
+          duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 80%',
+            start: 'top 82%',
           },
         }
       );
@@ -206,12 +215,12 @@ export default function Tech() {
       // Core cards staggered entrance with 3D depth
       gsap.fromTo(
         '.tech-core-card',
-        { y: 55, opacity: 0, scale: 0.94 },
+        { y: 50, opacity: 0, scale: 0.96 },
         {
           y: 0,
           opacity: 1,
           scale: 1,
-          stagger: 0.08,
+          stagger: 0.07,
           duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
@@ -224,7 +233,7 @@ export default function Tech() {
       // 3D Ecosystem banner reveal
       gsap.fromTo(
         '.tech-bottom-banner',
-        { y: 60, opacity: 0, scale: 0.95 },
+        { y: 55, opacity: 0, scale: 0.96 },
         {
           y: 0,
           opacity: 1,
@@ -237,10 +246,9 @@ export default function Tech() {
           },
         }
       );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section id="tech" ref={containerRef} className="section-padding" style={{ overflow: 'hidden' }}>

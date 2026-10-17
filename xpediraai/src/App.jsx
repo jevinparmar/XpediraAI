@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ReactLenis, useLenis } from 'lenis/react';
-import 'lenis/dist/lenis.css';
+import React, { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
+import SmoothScroll from './components/SmoothScroll';
 import Preloader from './components/Preloader';
 import Cursor from './components/Cursor';
 import SquaresBackground from './components/SquaresBackground';
@@ -18,32 +18,23 @@ import Footer from './components/Footer';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Dedicated hook component to synchronize Lenis scroll events with GSAP ScrollTrigger
-function LenisSyncManager({ lenisRef }) {
-  const lenis = useLenis(() => {
-    ScrollTrigger.update();
-  });
-
-  useEffect(() => {
-    if (lenis) {
-      window.lenis = lenis;
-      if (lenisRef) {
-        lenisRef.current = lenis;
-      }
-    }
-  }, [lenis, lenisRef]);
-
-  return null;
-}
-
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const lenisRef = useRef(null);
   const mainRef = useRef(null);
+  const lenisRef = useRef(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Subtle background ambient parallax as you glide down with Lenis
+  // Synchronize lenisRef with global window.lenis
+  React.useEffect(() => {
+    if (window.lenis) {
+      lenisRef.current = window.lenis;
+    }
+  }, []);
+
+  // Ambient floating blobs subtle scroll parallax
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
       gsap.to('.ambient-blob-1', {
         y: 200,
         x: -50,
@@ -78,64 +69,23 @@ export default function App() {
           scrub: 1.0,
         },
       });
-    }, mainRef);
-
-    // Global anchor link smooth scroll handler for all internal navigation (#)
-    const handleAnchorClick = (e) => {
-      const anchor = e.target.closest('a[href^="#"]');
-      if (!anchor) return;
-      const targetId = anchor.getAttribute('href');
-      if (!targetId || targetId === '#') return;
-
-      const targetEl = document.querySelector(targetId);
-      if (targetEl) {
-        e.preventDefault();
-        const activeLenis = window.lenis || lenisRef.current?.lenis || lenisRef.current;
-        if (activeLenis && typeof activeLenis.scrollTo === 'function') {
-          activeLenis.scrollTo(targetEl, {
-            offset: -70,
-            duration: 1.3,
-          });
-        } else {
-          targetEl.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    };
-
-    document.addEventListener('click', handleAnchorClick);
-
-    return () => {
-      ctx.revert();
-      document.removeEventListener('click', handleAnchorClick);
-    };
-  }, []);
+    },
+    { scope: mainRef }
+  );
 
   const handlePreloaderComplete = () => {
     setLoading(false);
     // Refresh ScrollTrigger calculations and resize Lenis dimensions once revealed
     setTimeout(() => {
-      const activeLenis = window.lenis || lenisRef.current?.lenis || lenisRef.current;
-      if (activeLenis && typeof activeLenis.resize === 'function') {
-        activeLenis.resize();
+      if (window.lenis && typeof window.lenis.resize === 'function') {
+        window.lenis.resize();
       }
       ScrollTrigger.refresh();
     }, 150);
   };
 
   return (
-    <ReactLenis
-      root
-      ref={lenisRef}
-      options={{
-        lerp: 0.08, // Buttery smooth continuous gliding interpolation
-        smoothWheel: true,
-        wheelMultiplier: 1.0,
-        touchMultiplier: 1.5,
-        infinite: false,
-        autoRaf: true,
-      }}
-    >
-      <LenisSyncManager lenisRef={lenisRef} />
+    <SmoothScroll>
       <div className="app-container" ref={mainRef}>
         {/* Full-Bleed Cyber Square Grid with Interactive Cursor Spotlight */}
         <SquaresBackground />
@@ -174,6 +124,6 @@ export default function App() {
         {/* Minimal Glass Footer */}
         <Footer lenisRef={lenisRef} />
       </div>
-    </ReactLenis>
+    </SmoothScroll>
   );
 }

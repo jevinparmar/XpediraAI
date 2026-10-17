@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import emailjs from '@emailjs/browser';
 import MagneticButton from './MagneticButton';
 import {
@@ -93,21 +94,29 @@ export default function Contact() {
     }
   };
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.contact-fade'], {
+          opacity: 1,
+          y: 0,
+        });
+        return;
+      }
+
       // Header reveal
       gsap.fromTo(
         '.section-badge, .section-title, .section-subtitle',
-        { y: 30, opacity: 0 },
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.12,
-          duration: 0.85,
+          stagger: 0.1,
+          duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 80%',
+            start: 'top 82%',
           },
         }
       );
@@ -115,13 +124,13 @@ export default function Contact() {
       // Glass cards staggered entrance
       gsap.fromTo(
         '.contact-fade',
-        { y: 50, opacity: 0, scale: 0.95 },
+        { y: 50, opacity: 0, scale: 0.96 },
         {
           y: 0,
           opacity: 1,
           scale: 1,
-          stagger: 0.15,
-          duration: 0.85,
+          stagger: 0.12,
+          duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
@@ -129,10 +138,9 @@ export default function Contact() {
           },
         }
       );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section id="contact" ref={containerRef} className="section-padding">

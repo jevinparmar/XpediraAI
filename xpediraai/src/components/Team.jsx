@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { IconLinkedin, IconGithub, IconTwitter } from './Icons';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -19,21 +20,29 @@ const TEAM_MEMBERS = [
 export default function Team() {
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.team-member-card'], {
+          opacity: 1,
+          y: 0,
+        });
+        return;
+      }
+
       // Header reveal
       gsap.fromTo(
         '.section-badge, .section-title, .section-subtitle',
-        { y: 30, opacity: 0 },
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.12,
-          duration: 0.85,
+          stagger: 0.1,
+          duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 80%',
+            start: 'top 82%',
           },
         }
       );
@@ -41,23 +50,22 @@ export default function Team() {
       // CEO Card reveal
       gsap.fromTo(
         '.team-member-card',
-        { y: 55, opacity: 0, scale: 0.92 },
+        { y: 50, opacity: 0, scale: 0.95 },
         {
           y: 0,
           opacity: 1,
           scale: 1,
           duration: 0.95,
-          ease: 'back.out(1.15)',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 75%',
           },
         }
       );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section id="team" ref={containerRef} className="section-padding">

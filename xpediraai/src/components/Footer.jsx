@@ -1,19 +1,74 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { ArrowUp } from 'lucide-react';
 import { IconLinkedin, IconGithub, IconTwitter } from './Icons';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Footer({ lenisRef }) {
+  const containerRef = useRef(null);
+
   const scrollToTop = () => {
     const activeLenis = window.lenis || (lenisRef && lenisRef.current?.lenis) || lenisRef?.current;
     if (activeLenis && typeof activeLenis.scrollTo === 'function') {
-      activeLenis.scrollTo(0, { duration: 1.4 });
+      activeLenis.scrollTo(0, { duration: 1.25 });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.set(['.footer-divider-glow', '.footer-grid > div'], {
+          opacity: 1,
+          scaleX: 1,
+          y: 0,
+        });
+        return;
+      }
+
+      // Glowing top divider line expansion
+      gsap.fromTo(
+        '.footer-divider-glow',
+        { scaleX: 0, opacity: 0 },
+        {
+          scaleX: 1,
+          opacity: 1,
+          duration: 1.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 90%',
+          },
+        }
+      );
+
+      // Staggered footer columns reveal
+      gsap.fromTo(
+        '.footer-grid > div',
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.1,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 85%',
+          },
+        }
+      );
+    },
+    { scope: containerRef }
+  );
+
   return (
     <footer
+      ref={containerRef}
       style={{
         position: 'relative',
         backgroundColor: 'rgba(7, 7, 7, 0.75)',
@@ -27,6 +82,7 @@ export default function Footer({ lenisRef }) {
     >
       {/* Small Glowing Green Divider Line */}
       <div
+        className="footer-divider-glow"
         style={{
           position: 'absolute',
           top: 0,

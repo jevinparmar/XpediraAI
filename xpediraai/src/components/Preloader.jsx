@@ -35,9 +35,9 @@ export default function Preloader({ onComplete }) {
     // Content fade & slight scale down
     tl.to(contentRef.current, {
       opacity: 0,
-      scale: 0.94,
+      scale: 0.95,
       duration: 0.35,
-      ease: 'power2.in',
+      ease: 'power3.in',
     });
 
     // Main preloader curtain fade out
@@ -45,8 +45,8 @@ export default function Preloader({ onComplete }) {
       containerRef.current,
       {
         opacity: 0,
-        duration: 0.45,
-        ease: 'power2.out',
+        duration: 0.5,
+        ease: 'power3.out',
       },
       '-=0.15'
     );

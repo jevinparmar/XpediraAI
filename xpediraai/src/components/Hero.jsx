@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import Scene3D from './Scene3D';
 import MagneticButton from './MagneticButton';
 import { ArrowDownRight, Cpu } from 'lucide-react';
@@ -28,43 +29,51 @@ export default function Hero({ lenisRef }) {
     if (!el) return;
     const activeLenis = window.lenis || (lenisRef && lenisRef.current?.lenis) || lenisRef?.current;
     if (activeLenis && typeof activeLenis.scrollTo === 'function') {
-      activeLenis.scrollTo(el, { offset: -60, duration: 1.3 });
+      activeLenis.scrollTo(el, { offset: -75, duration: 1.25 });
     } else {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.25 });
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.set(['.hero-word-inner', badgeRef.current, subtextRef.current, ctaRef.current], {
+          opacity: 1,
+          y: 0,
+        });
+        return;
+      }
 
-      // Badge reveal with slight bounce
+      const tl = gsap.timeline({ delay: 0.2 });
+
+      // Badge reveal with smooth spring
       tl.fromTo(
         badgeRef.current,
-        { opacity: 0, y: -20, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.75, ease: 'back.out(1.6)' }
+        { opacity: 0, y: -20, scale: 0.92 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }
       );
 
       // Split words stagger entrance with 3D perspective rotation
       tl.fromTo(
         '.hero-word-inner',
-        { y: '120%', opacity: 0, rotateX: -45 },
+        { y: '120%', opacity: 0, rotateX: -40 },
         {
           y: '0%',
           opacity: 1,
           rotateX: 0,
           stagger: 0.08,
-          duration: 0.95,
+          duration: 1.0,
           ease: 'power4.out',
         },
-        '-=0.4'
+        '-=0.45'
       );
 
       // Subtext
       tl.fromTo(
         subtextRef.current,
         { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+        { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
         '-=0.5'
       );
 
@@ -72,26 +81,25 @@ export default function Hero({ lenisRef }) {
       tl.fromTo(
         ctaRef.current,
         { opacity: 0, y: 24, scale: 0.96 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.2)' },
-        '-=0.5'
+        { opacity: 1, y: 0, scale: 1, duration: 0.85, ease: 'power3.out' },
+        '-=0.55'
       );
 
       // Subtle scroll parallax depth on text content as user scrolls down
       gsap.to('.hero-left-content', {
-        y: -90,
-        opacity: 0.2,
+        y: -85,
+        opacity: 0.25,
         ease: 'none',
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
           end: 'bottom top',
-          scrub: 0.6,
+          scrub: 0.8,
         },
       });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section

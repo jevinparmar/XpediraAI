@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { CheckCircle2, Zap, Lock, RefreshCw, Users } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -98,21 +99,29 @@ export default function WhyUs() {
   const statNumbersRef = useRef([]);
   const [activeStep, setActiveStep] = useState(0);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.why-stat-card'], {
+          opacity: 1,
+          y: 0,
+        });
+        return;
+      }
+
       // Header reveal
       gsap.fromTo(
         '.section-badge, .section-title, .section-subtitle',
-        { y: 30, opacity: 0 },
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.12,
-          duration: 0.85,
+          stagger: 0.1,
+          duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 80%',
+            start: 'top 82%',
           },
         }
       );
@@ -120,14 +129,14 @@ export default function WhyUs() {
       // Stat cards staggered entrance
       gsap.fromTo(
         '.why-stat-card',
-        { y: 45, opacity: 0, scale: 0.94 },
+        { y: 45, opacity: 0, scale: 0.96 },
         {
           y: 0,
           opacity: 1,
           scale: 1,
-          stagger: 0.09,
+          stagger: 0.08,
           duration: 0.85,
-          ease: 'back.out(1.2)',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: '.why-stat-grid',
             start: 'top 85%',
@@ -148,6 +157,7 @@ export default function WhyUs() {
           scrollTrigger: {
             trigger: el,
             start: 'top 85%',
+            once: true,
           },
           onUpdate: () => {
             el.innerText = `${stat.prefix}${counter.val.toFixed(stat.decimals)}${stat.suffix}`;
@@ -172,11 +182,6 @@ export default function WhyUs() {
           anticipatePin: 1,
           scrub: 0.3,
           onUpdate: (self) => {
-            // 4 discrete steps evenly mapped across the pinned scroll:
-            // [0.00..0.25) -> Step 0 (01)
-            // [0.25..0.50) -> Step 1 (02)
-            // [0.50..0.75) -> Step 2 (03)
-            // [0.75..1.00] -> Step 3 (04)
             const calculatedStep = Math.min(
               FEATURES.length - 1,
               Math.max(0, Math.floor(self.progress * FEATURES.length))
@@ -192,10 +197,9 @@ export default function WhyUs() {
           scrollTriggerRef.current = null;
         };
       });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: containerRef }
+  );
 
   // Handle clicking a specific tab to smoothly scroll to that step in the pinned sequence
   const handleTabClick = (idx) => {

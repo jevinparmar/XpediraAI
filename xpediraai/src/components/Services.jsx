@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import {
   Bot,
   BrainCircuit,
@@ -309,21 +310,29 @@ function ServiceCard({ item }) {
 export default function Services() {
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.set(['.section-badge', '.section-title', '.section-subtitle', '.service-card'], {
+          opacity: 1,
+          y: 0,
+        });
+        return;
+      }
+
       // Staggered header reveal
       gsap.fromTo(
         '.section-badge, .section-title, .section-subtitle',
-        { y: 30, opacity: 0 },
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.12,
-          duration: 0.85,
+          stagger: 0.1,
+          duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 80%',
+            start: 'top 82%',
           },
         }
       );
@@ -331,25 +340,23 @@ export default function Services() {
       // Staggered 3D reveal of service cards on scroll
       gsap.fromTo(
         '.service-card',
-        { y: 65, opacity: 0, scale: 0.94, rotateX: 6 },
+        { y: 55, opacity: 0, scale: 0.96 },
         {
           y: 0,
           opacity: 1,
           scale: 1,
-          rotateX: 0,
-          stagger: 0.1,
+          stagger: 0.08,
           duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 70%',
+            start: 'top 75%',
           },
         }
       );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section id="services" ref={containerRef} className="section-padding">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import MagneticButton from './MagneticButton';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 
@@ -32,49 +33,66 @@ export default function Navbar({ lenisRef }) {
 
     const activeLenis = window.lenis || (lenisRef && lenisRef.current?.lenis) || lenisRef?.current;
     if (activeLenis && typeof activeLenis.scrollTo === 'function') {
-      activeLenis.scrollTo(element, { offset: -70, duration: 1.3 });
+      activeLenis.scrollTo(element, { offset: -70, duration: 1.25 });
     } else {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  useEffect(() => {
-    // Elegant slide-down entrance animation
-    if (navRef.current) {
-      gsap.fromTo(
-        navRef.current,
-        { y: -80, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', delay: 0.1 }
-      );
-    }
+  useGSAP(
+    () => {
+      // Elegant slide-down entrance animation
+      if (navRef.current) {
+        gsap.fromTo(
+          navRef.current,
+          { y: -80, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', delay: 0.1 }
+        );
+      }
 
-    // Toggle glass backdrop when scrolling
+      // Hide navbar on scroll down, reveal on scroll up
+      ScrollTrigger.create({
+        start: 'top top',
+        end: 'max',
+        onUpdate: (self) => {
+          if (mobileMenuOpen) return;
+          if (self.direction === 1 && self.scroll() > 130) {
+            // Scrolling down
+            gsap.to(navRef.current, { y: -90, duration: 0.35, ease: 'power3.out' });
+          } else if (self.direction === -1) {
+            // Scrolling up
+            gsap.to(navRef.current, { y: 0, duration: 0.35, ease: 'power3.out' });
+          }
+        },
+      });
+
+      // Track active section with ScrollTrigger
+      const sections = ['services', 'tech', 'why', 'team', 'contact'];
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 45%',
+          end: 'bottom 45%',
+          onEnter: () => setActiveSection(id),
+          onEnterBack: () => setActiveSection(id),
+        });
+      });
+    },
+    { scope: navRef, dependencies: [mobileMenuOpen] }
+  );
+
+  // Toggle glass backdrop when scrolling
+  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 40);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-
-    // Track active section with ScrollTrigger
-    const sections = ['services', 'tech', 'why', 'team', 'contact'];
-    const triggers = sections.map((id) => {
-      const el = document.getElementById(id);
-      if (!el) return null;
-
-      return ScrollTrigger.create({
-        trigger: el,
-        start: 'top 45%',
-        end: 'bottom 45%',
-        onEnter: () => setActiveSection(id),
-        onEnterBack: () => setActiveSection(id),
-      });
-    });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      triggers.forEach((t) => t && t.kill());
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Mobile menu staggered animation
