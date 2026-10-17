@@ -353,9 +353,22 @@ p {
 
 .text-gradient-gold,
 .text-gradient-green {
+  color: var(--gold);
   background: linear-gradient(135deg, #FFFFFF 30%, var(--gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.text-gradient-gold .split-word,
+.text-gradient-green .split-word,
+.text-gradient-gold span,
+.text-gradient-green span {
+  color: var(--gold);
+  background: linear-gradient(135deg, #FFFFFF 30%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
 .text-gold,

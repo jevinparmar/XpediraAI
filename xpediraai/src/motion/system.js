@@ -107,7 +107,6 @@ export function useRevealText(elementRef, options = {}) {
     end = 'bottom 60%',
     stagger = 0.024,
     duration = 0.95,
-    blur = 12,
     ease = 'expo-soft',
   } = options;
 
@@ -180,24 +179,23 @@ export function useRevealText(elementRef, options = {}) {
         return () => split.revert();
       }
 
-      // Default: 'blur-to-sharp'
+      // Default: 'blur-to-sharp' / word elevation
       const split = new SplitText(elementRef.current, {
-        type: 'lines,words,chars',
+        type: 'lines,words',
         linesClass: 'split-line',
+        wordsClass: 'split-word',
       });
 
       gsap.fromTo(
-        split.chars,
+        split.words,
         {
           opacity: 0,
-          y: 26,
-          filter: `blur(${blur}px)`,
+          y: 28,
         },
         {
           opacity: 1,
           y: 0,
-          filter: 'blur(0px)',
-          stagger,
+          stagger: stagger || 0.045,
           duration,
           ease: EASES.expoSoft || ease,
           scrollTrigger: {
@@ -206,7 +204,7 @@ export function useRevealText(elementRef, options = {}) {
             once: true,
           },
           onComplete: () => {
-            gsap.set(split.chars, { clearProps: 'filter,transform' });
+            gsap.set(split.words, { clearProps: 'transform,opacity' });
           },
         }
       );

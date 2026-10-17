@@ -9,7 +9,7 @@ import { scrambleText } from '../hooks/useAdvancedAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Hero({ lenisRef }) {
+export default function Hero({ lenisRef, loading = false }) {
   const containerRef = useRef(null);
   const headlineRef = useRef(null);
   const subtextRef = useRef(null);
@@ -39,8 +39,11 @@ export default function Hero({ lenisRef }) {
 
   useGSAP(
     () => {
+      // Wait for preloader curtain to complete before launching hero choreography
+      if (loading) return;
+
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set(['.hero-char', badgeRef.current, subtextRef.current, ctaRef.current], {
+        gsap.set(['.hero-word-inner', badgeRef.current, subtextRef.current, ctaRef.current], {
           opacity: 1,
           y: 0,
         });
@@ -52,25 +55,24 @@ export default function Hero({ lenisRef }) {
         scrambleText(badgeTextRef.current, 'Next-Gen Applied Neural Architecture', 0.9);
       }
 
-      const tl = gsap.timeline({ delay: 0.2 });
+      const tl = gsap.timeline({ delay: 0.1 });
 
       // 2. Badge entrance
       tl.fromTo(
         badgeRef.current,
         { opacity: 0, y: -20, scale: 0.92 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }
+        { opacity: 1, y: 0, scale: 1, duration: 0.75, ease: 'power3.out' }
       );
 
-      // 3. Main Hero Heading: Masked line-by-line slide-up with character stagger & 3D rotationX / skew settle
+      // 3. Main Hero Heading: Masked word slide-up with character hover & 3D rotation settle
       tl.fromTo(
-        '.hero-char',
-        { yPercent: 115, opacity: 0, rotateX: -35, skewY: 4 },
+        '.hero-word-inner',
+        { yPercent: 120, opacity: 0, rotateX: -30 },
         {
           yPercent: 0,
           opacity: 1,
           rotateX: 0,
-          skewY: 0,
-          stagger: 0.022,
+          stagger: 0.075,
           duration: 0.95,
           ease: 'power4.out',
         },
@@ -106,7 +108,7 @@ export default function Hero({ lenisRef }) {
         },
       });
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [loading] }
   );
 
   // Letter-hover effect: Characters dynamically elevate on mouse over
@@ -188,24 +190,33 @@ export default function Hero({ lenisRef }) {
                       overflow: 'hidden',
                       marginRight: '0.28em',
                       verticalAlign: 'top',
+                      paddingBottom: '0.08em',
                     }}
                   >
-                    {word.split('').map((char, charIdx) => (
-                      <span
-                        key={charIdx}
-                        className="hero-char"
-                        onMouseEnter={handleCharHover}
-                        style={{
-                          display: 'inline-block',
-                          color: isGreen ? 'var(--green)' : '#EDEDED',
-                          textShadow: isGreen ? '0 0 35px rgba(214, 168, 79, 0.45)' : 'none',
-                          cursor: 'default',
-                          transition: 'color 0.2s ease',
-                        }}
-                      >
-                        {char}
-                      </span>
-                    ))}
+                    <span
+                      className="hero-word-inner"
+                      style={{
+                        display: 'inline-block',
+                        color: isGreen ? 'var(--green)' : '#EDEDED',
+                        textShadow: isGreen ? '0 0 35px rgba(214, 168, 79, 0.45)' : 'none',
+                        willChange: 'transform, opacity',
+                      }}
+                    >
+                      {word.split('').map((char, charIdx) => (
+                        <span
+                          key={charIdx}
+                          className="hero-char"
+                          onMouseEnter={handleCharHover}
+                          style={{
+                            display: 'inline-block',
+                            cursor: 'default',
+                            transition: 'color 0.2s ease',
+                          }}
+                        >
+                          {char}
+                        </span>
+                      ))}
+                    </span>
                   </span>
                 );
               })}

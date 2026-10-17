@@ -72,11 +72,10 @@ export function useScrambleOnHover(elementRef, originalText) {
  */
 export function useHeadingReveal(headingRef, options = {}) {
   const {
-    start = 'top 85%',
-    duration = 0.95,
-    stagger = 0.02,
+    start = 'top 88%',
+    duration = 0.85,
+    stagger = 0.05,
     ease = 'power3.out',
-    blur = 12,
   } = options;
 
   useGSAP(
@@ -88,21 +87,20 @@ export function useHeadingReveal(headingRef, options = {}) {
       }
 
       const split = new SplitText(headingRef.current, {
-        type: 'lines,words,chars',
+        type: 'lines,words',
         linesClass: 'split-line',
+        wordsClass: 'split-word',
       });
 
       gsap.fromTo(
-        split.chars,
+        split.words,
         {
           opacity: 0,
-          y: 28,
-          filter: `blur(${blur}px)`,
+          y: 30,
         },
         {
           opacity: 1,
           y: 0,
-          filter: 'blur(0px)',
           stagger,
           duration,
           ease,
@@ -112,8 +110,7 @@ export function useHeadingReveal(headingRef, options = {}) {
             once: true,
           },
           onComplete: () => {
-            // Clean up inline styles so letter-hover interaction works smoothly
-            gsap.set(split.chars, { clearProps: 'filter,transform' });
+            gsap.set(split.words, { clearProps: 'transform,opacity' });
           },
         }
       );

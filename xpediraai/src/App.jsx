@@ -147,7 +147,7 @@ export default function App() {
 
         {/* Main Single-Page Sections */}
         <main>
-          <Hero lenisRef={lenisRef} />
+          <Hero lenisRef={lenisRef} loading={loading} />
           <Services />
           <Tech />
           <WhyUs />
