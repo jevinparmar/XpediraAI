@@ -6,7 +6,7 @@ import { useGSAP } from '@gsap/react';
 import SmoothScroll from './components/SmoothScroll';
 import Preloader from './components/Preloader';
 import Cursor from './components/Cursor';
-import SquaresBackground from './components/SquaresBackground';
+import VantaFogBackground from './components/VantaFogBackground';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
@@ -121,8 +121,17 @@ export default function App() {
           aria-hidden="true"
         />
 
-        {/* Full-Bleed Cyber Square Grid with Interactive Cursor Spotlight */}
-        <SquaresBackground />
+        {/* Dynamic 3D Vanta Atmospheric Fog Background */}
+        <VantaFogBackground
+          highlightColor="#D6A84F"
+          midtoneColor="#3a2c14"
+          lowlightColor="#162032"
+          baseColor="#0c101b"
+          blurFactor={0.6}
+          zoom={0.9}
+          speed={0.75}
+          density={0.52}
+        />
 
         {/* Matte Film Noise Overlay */}
         <div className="matte-noise" aria-hidden="true" />
