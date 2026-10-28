@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const NAV_LINKS = [
   { name: 'Services', href: '#services' },
+  { name: 'Products', href: '#products' },
   { name: 'Tech', href: '#tech' },
   { name: 'Why Us', href: '#why' },
   { name: 'Team', href: '#team' },
@@ -67,7 +68,7 @@ export default function Navbar({ lenisRef }) {
       });
 
       // Track active section with ScrollTrigger
-      const sections = ['services', 'tech', 'why', 'team', 'contact'];
+      const sections = ['services', 'products', 'tech', 'why', 'team', 'contact'];
       sections.forEach((id) => {
         const el = document.getElementById(id);
         if (!el) return;

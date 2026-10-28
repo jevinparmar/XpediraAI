@@ -10,6 +10,7 @@ import VantaFogBackground from './components/VantaFogBackground';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
+import Products from './components/Products';
 import Tech from './components/Tech';
 import WhyUs from './components/WhyUs';
 import Team from './components/Team';
@@ -158,6 +159,7 @@ export default function App() {
         <main>
           <Hero lenisRef={lenisRef} loading={loading} />
           <Services />
+          <Products lenisRef={lenisRef} />
           <Tech />
           <WhyUs />
           <Team />

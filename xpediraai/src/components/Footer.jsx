@@ -261,10 +261,10 @@ export default function Footer({ lenisRef }) {
                 Solutions
               </div>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {['Autonomous Agents', 'Custom Foundation Models', 'Computer Vision', 'GraphRAG Engines', 'Zero-Trust AI'].map((item) => (
-                  <li key={item}>
+                {[{ name: 'Enterprise Products', href: '#products' }, { name: 'Autonomous Agents', href: '#services' }, { name: 'Custom Foundation Models', href: '#services' }, { name: 'Computer Vision', href: '#services' }, { name: 'GraphRAG Engines', href: '#services' }].map((item) => (
+                  <li key={item.name}>
                     <a
-                      href="#services"
+                      href={item.href}
                       style={{
                         fontSize: '0.85rem',
                         color: 'var(--text-muted)',
@@ -274,7 +274,7 @@ export default function Footer({ lenisRef }) {
                       onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--green)')}
                       onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
                     >
-                      {item}
+                      {item.name}
                     </a>
                   </li>
                 ))}

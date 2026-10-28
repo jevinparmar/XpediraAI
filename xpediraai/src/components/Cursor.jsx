@@ -331,7 +331,7 @@ export default function Cursor() {
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: 99999,
+        zIndex: 100005,
         opacity: 0,
         willChange: 'opacity',
       }}

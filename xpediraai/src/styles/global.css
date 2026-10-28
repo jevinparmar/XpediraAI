@@ -48,7 +48,7 @@ body {
   overflow-x: clip; /* Clip horizontal overflow without breaking Lenis window scroll */
 }
 
-/* Hide native cursor only when custom cursor is active on fine-pointer devices */
+/* Hide native cursor when custom cursor is active on fine-pointer devices */
 @media (pointer: fine) {
   html.has-custom-cursor,
   html.has-custom-cursor *:not(input):not(textarea):not(select):not([contenteditable="true"]) {
@@ -576,5 +576,27 @@ select:focus-visible {
   }
   .ambient-blob {
     animation: none !important;
+  }
+}
+
+/* Products Grid & Normal Sized Card Layout */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.product-card {
+  width: 100%;
+  max-width: 620px;
+}
+
+@media (max-width: 860px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  .product-card {
+    max-width: 100%;
   }
 }
