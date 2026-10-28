@@ -803,10 +803,10 @@ select:focus-visible {
 }
 
 /* 12. Team Side-by-Side Responsiveness */
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .team-card-side-by-side {
     flex-direction: column !important;
-    max-width: 380px !important;
+    max-width: 440px !important;
   }
   .team-portrait-container {
     width: 100% !important;

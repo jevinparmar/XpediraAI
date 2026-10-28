@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { IconLinkedin, IconGithub, IconTwitter } from './Icons';
+import { Award, Cpu } from 'lucide-react';
 import {
   useHeadingReveal,
   useParagraphHighlight,
@@ -15,9 +16,25 @@ const TEAM_MEMBERS = [
   {
     name: 'Akshay Ranpariya',
     role: 'Chief Executive Officer',
+    subRole: 'Data Scientist & AI Researcher',
     image: '/team/ceo.jpg',
-    bio: 'Visionary founder and executive leading Xpedira AI in architecting autonomous agents, enterprise intelligence systems, and mission-critical cloud pipelines.',
+    bio: 'Data Scientist and AI Researcher overseeing supercomputer facility operations with published research in deep learning, computer vision, and NLP. Indian patent grantee for assistive AI navigation, leading Xpedira AI in architecting autonomous intelligence and enterprise systems.',
     focus: 'Founder & Chief Executive Officer',
+    badges: [
+      { label: 'Indian Patent Grantee', type: 'patent' },
+      { label: 'Supercomputer Facility In-Charge', type: 'hpc' },
+    ],
+    skills: [
+      'Python',
+      'PyTorch',
+      'Generative AI',
+      'Deep Learning',
+      'Computer Vision',
+      'NLP',
+      'Data Science',
+      'HPC / Supercomputing',
+      'Robotics & IoT',
+    ],
     social: { linkedin: '#', github: '#', twitter: '#' },
   },
 ];
@@ -184,7 +201,7 @@ export default function Team() {
                 flexDirection: 'row',
                 overflow: 'hidden',
                 width: '100%',
-                maxWidth: '780px',
+                maxWidth: '860px',
                 borderRadius: 'var(--radius-xl)',
                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
                 backdropFilter: 'blur(24px) saturate(180%)',
@@ -293,7 +310,7 @@ export default function Team() {
               <div
                 className="team-info-container"
                 style={{
-                  padding: '36px 36px 32px',
+                  padding: '32px 34px 28px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
@@ -301,12 +318,61 @@ export default function Team() {
                 }}
               >
                 <div>
+                  {/* Executive Accomplishment Badges */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '8px',
+                      marginBottom: '12px',
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        borderRadius: 'var(--radius-pill)',
+                        background: 'rgba(214, 168, 79, 0.12)',
+                        border: '1px solid rgba(214, 168, 79, 0.35)',
+                        color: 'var(--gold)',
+                        fontSize: '0.68rem',
+                        fontFamily: 'var(--font-heading)',
+                        fontWeight: 700,
+                        letterSpacing: '0.03em',
+                      }}
+                    >
+                      <Award size={12} />
+                      <span>Indian Patent Grantee</span>
+                    </span>
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '3px 10px',
+                        borderRadius: 'var(--radius-pill)',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.12)',
+                        color: '#E5E7EB',
+                        fontSize: '0.68rem',
+                        fontFamily: 'var(--font-heading)',
+                        fontWeight: 600,
+                      }}
+                    >
+                      <Cpu size={12} color="var(--green)" />
+                      <span>Supercomputer Facility In-Charge</span>
+                    </span>
+                  </div>
+
                   <h3
                     style={{
                       fontSize: '1.45rem',
                       fontWeight: 700,
                       color: '#EDEDED',
-                      marginBottom: '6px',
+                      marginBottom: '4px',
+                      fontFamily: 'var(--font-heading)',
                     }}
                   >
                     {member.name}
@@ -318,22 +384,64 @@ export default function Team() {
                       fontFamily: 'var(--font-heading)',
                       color: 'var(--green-soft)',
                       fontWeight: 600,
-                      marginBottom: '16px',
+                      marginBottom: '14px',
                     }}
                   >
-                    {member.role}
+                    {member.role} • <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>{member.subRole}</span>
                   </div>
 
                   <p
                     style={{
-                      fontSize: '0.88rem',
+                      fontSize: '0.84rem',
                       color: 'var(--text-muted)',
-                      lineHeight: 1.65,
-                      marginBottom: '24px',
+                      lineHeight: 1.6,
+                      marginBottom: '18px',
                     }}
                   >
                     {member.bio}
                   </p>
+
+                  {/* Core Technical Expertise Header */}
+                  <div
+                    style={{
+                      fontSize: '0.70rem',
+                      fontFamily: 'var(--font-heading)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      color: 'var(--gold)',
+                      fontWeight: 700,
+                      marginBottom: '8px',
+                    }}
+                  >
+                    Core Technical Expertise
+                  </div>
+
+                  {/* Technical Skills Pills */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '5px',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {member.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        style={{
+                          fontSize: '0.66rem',
+                          fontFamily: 'SFMono-Regular, monospace',
+                          padding: '2px 8px',
+                          borderRadius: '6px',
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          color: '#E5E7EB',
+                        }}
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Social Links as Frosted Glass Circles */}
