@@ -801,3 +801,20 @@ select:focus-visible {
     margin: 24px 0 16px !important;
   }
 }
+
+/* 12. Team Side-by-Side Responsiveness */
+@media (max-width: 680px) {
+  .team-card-side-by-side {
+    flex-direction: column !important;
+    max-width: 380px !important;
+  }
+  .team-portrait-container {
+    width: 100% !important;
+    min-width: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+  }
+  .team-info-container {
+    padding: 24px 20px 26px !important;
+  }
+}

@@ -178,13 +178,13 @@ export default function Team() {
           {TEAM_MEMBERS.map((member, idx) => (
             <div
               key={idx}
-              className="glass-card team-member-card"
+              className="glass-card team-member-card team-card-side-by-side"
               style={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 overflow: 'hidden',
                 width: '100%',
-                maxWidth: '380px',
+                maxWidth: '780px',
                 borderRadius: 'var(--radius-xl)',
                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
                 backdropFilter: 'blur(24px) saturate(180%)',
@@ -217,10 +217,12 @@ export default function Team() {
               {/* Portrait Container with Cinematic Reveal */}
               <div
                 ref={portraitWrapRef}
+                className="team-portrait-container"
                 style={{
                   position: 'relative',
-                  width: '100%',
-                  aspectRatio: '1 / 1',
+                  width: '320px',
+                  minWidth: '280px',
+                  flexShrink: 0,
                   overflow: 'hidden',
                   backgroundColor: '#111312',
                 }}
@@ -257,24 +259,24 @@ export default function Team() {
                   style={{
                     position: 'absolute',
                     bottom: '16px',
-                    left: '16px',
-                    right: '16px',
-                    padding: '6px 14px',
+                    left: '14px',
+                    right: '14px',
+                    padding: '6px 12px',
                     borderRadius: 'var(--radius-pill)',
-                    background: 'rgba(17, 24, 39, 0.65)',
+                    background: 'rgba(17, 24, 39, 0.75)',
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
                     border: '1px solid rgba(214, 168, 79, 0.3)',
                     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
                   }}
                 >
                   <span
                     style={{
                       fontFamily: 'SFMono-Regular, monospace',
-                      fontSize: '0.7rem',
+                      fontSize: '0.68rem',
                       color: 'var(--green)',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
@@ -289,8 +291,9 @@ export default function Team() {
 
               {/* Info Container */}
               <div
+                className="team-info-container"
                 style={{
-                  padding: '24px 24px 28px',
+                  padding: '36px 36px 32px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
@@ -300,10 +303,10 @@ export default function Team() {
                 <div>
                   <h3
                     style={{
-                      fontSize: '1.25rem',
+                      fontSize: '1.45rem',
                       fontWeight: 700,
                       color: '#EDEDED',
-                      marginBottom: '4px',
+                      marginBottom: '6px',
                     }}
                   >
                     {member.name}
@@ -311,11 +314,11 @@ export default function Team() {
 
                   <div
                     style={{
-                      fontSize: '0.825rem',
+                      fontSize: '0.85rem',
                       fontFamily: 'var(--font-heading)',
                       color: 'var(--green-soft)',
                       fontWeight: 600,
-                      marginBottom: '14px',
+                      marginBottom: '16px',
                     }}
                   >
                     {member.role}
@@ -323,9 +326,9 @@ export default function Team() {
 
                   <p
                     style={{
-                      fontSize: '0.85rem',
+                      fontSize: '0.88rem',
                       color: 'var(--text-muted)',
-                      lineHeight: 1.6,
+                      lineHeight: 1.65,
                       marginBottom: '24px',
                     }}
                   >

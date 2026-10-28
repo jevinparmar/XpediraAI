@@ -10,7 +10,6 @@ import {
   ChevronRight,
   Maximize2,
   X,
-  Code2,
 } from "lucide-react";
 import {
   useHeadingReveal,
@@ -837,7 +836,7 @@ function ProductCard({ product, onOpenLightbox }) {
             display: "flex",
             flexWrap: "wrap",
             gap: "5px",
-            marginBottom: "14px",
+            marginBottom: 0,
           }}
         >
           {product.technologies.map((tech) => (
@@ -857,50 +856,6 @@ function ProductCard({ product, onOpenLightbox }) {
             </span>
           ))}
         </div>
-
-        {/* Repository & Architecture Footer Link */}
-        {product.links.github && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingTop: "12px",
-              borderTop: "1px solid rgba(255, 255, 255, 0.08)",
-            }}
-          >
-            <a
-              href={product.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                fontSize: "0.74rem",
-                fontFamily: "var(--font-heading)",
-                color: "var(--text-dim)",
-                textDecoration: "none",
-                transition: "color 0.2s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-dim)")}
-            >
-              <Code2 size={13} />
-              <span>Architecture & Source Code</span>
-            </a>
-
-            <span
-              style={{
-                fontFamily: "SFMono-Regular, monospace",
-                fontSize: "0.68rem",
-                color: "var(--text-dim)",
-              }}
-            >
-              #{product.id}
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );
