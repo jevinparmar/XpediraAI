@@ -240,6 +240,7 @@ export default function Hero({ lenisRef, loading = false }) {
             {/* Two Action Buttons */}
             <div
               ref={ctaRef}
+              className="hero-cta-btns"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -286,8 +287,8 @@ export default function Hero({ lenisRef, loading = false }) {
             <div
               style={{
                 position: 'absolute',
-                width: '460px',
-                height: '460px',
+                width: 'min(460px, 90vw)',
+                height: 'min(460px, 90vw)',
                 borderRadius: '50%',
                 background: 'radial-gradient(circle, rgba(214, 168, 79, 0.22) 0%, rgba(17, 24, 39, 0.35) 55%, transparent 75%)',
                 filter: 'blur(60px)',
@@ -317,9 +318,19 @@ export default function Hero({ lenisRef, loading = false }) {
           .hero-left-content {
             margin: 0 auto;
           }
+          .hero-cta-btns {
+            justify-content: center !important;
+          }
           .hero-canvas-wrapper {
-            height: 460px !important;
+            height: min(440px, 55vh) !important;
+            min-height: 320px !important;
             order: 2;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-canvas-wrapper {
+            height: 340px !important;
+            min-height: 280px !important;
           }
         }
       `}</style>

@@ -197,7 +197,7 @@ export default function Contact() {
         >
           {/* Left Info Panel */}
           <div
-            className="glass-card contact-fade"
+            className="glass-card contact-fade contact-info-panel"
             style={{
               padding: '44px 38px',
               display: 'flex',
@@ -250,10 +250,13 @@ export default function Contact() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '36px' }}>
                 {/* Email with copy button */}
                 <div
+                  className="contact-channel-item contact-email-card"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '12px',
                     padding: '16px 20px',
                     borderRadius: 'var(--radius-md)',
                     background: 'rgba(255, 255, 255, 0.05)',
@@ -263,7 +266,7 @@ export default function Contact() {
                     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.18)',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
                     <div
                       style={{
                         width: '36px',
@@ -274,21 +277,24 @@ export default function Contact() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        flexShrink: 0,
                       }}
                     >
                       <Mail size={18} color="var(--green)" />
                     </div>
-                    <div>
+                    <div style={{ minWidth: 0 }}>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>
                         Direct Inquiries
                       </div>
                       <a
                         href="mailto:intelligence@xpedira.ai"
+                        className="contact-email-link"
                         style={{
                           fontSize: '0.95rem',
                           color: '#EDEDED',
                           textDecoration: 'none',
                           fontWeight: 500,
+                          wordBreak: 'break-word',
                         }}
                       >
                         intelligence@xpedira.ai
@@ -298,6 +304,7 @@ export default function Contact() {
 
                   <button
                     onClick={handleCopyEmail}
+                    className="contact-copy-btn"
                     style={{
                       background: 'rgba(255, 255, 255, 0.06)',
                       border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -311,6 +318,8 @@ export default function Contact() {
                       fontSize: '0.75rem',
                       fontFamily: 'SFMono-Regular, monospace',
                       transition: 'all 0.2s ease',
+                      flexShrink: 0,
+                      marginLeft: 'auto',
                     }}
                     title="Copy email to clipboard"
                   >
@@ -420,7 +429,7 @@ export default function Contact() {
 
           {/* Right Contact Form */}
           <div
-            className="glass-card contact-fade"
+            className="glass-card contact-fade contact-form-panel"
             style={{
               padding: '44px 38px',
               borderRadius: 'var(--radius-xl)',

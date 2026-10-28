@@ -320,7 +320,7 @@ export default function Tech() {
           className="tech-core-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
             gap: '24px',
             marginBottom: '64px',
           }}
@@ -821,6 +821,7 @@ export default function Tech() {
 
           {/* Right 3D Orbit Display */}
           <div
+            className="tech-orbit-canvas-wrapper"
             style={{
               position: 'relative',
               height: '240px',

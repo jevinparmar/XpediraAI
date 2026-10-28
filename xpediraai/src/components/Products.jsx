@@ -695,6 +695,7 @@ function ProductCard({ product, onOpenLightbox }) {
 
         {/* Compact Key Metrics Bar */}
         <div
+          className="product-metrics-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
@@ -989,6 +990,7 @@ function LightboxModal({ activeLightbox, onClose }) {
         {/* PROMINENT LEFT ARROW BUTTON */}
         <button
           type="button"
+          className="lightbox-nav-btn lightbox-prev-btn"
           onClick={() => setSlideIdx((prev) => (prev === 0 ? 1 : 0))}
           aria-label="Previous slide (Left Arrow)"
           title="Previous slide (Left Arrow)"
@@ -1031,6 +1033,7 @@ function LightboxModal({ activeLightbox, onClose }) {
 
         {/* 100% Uncut Full Screen Image */}
         <img
+          className="lightbox-modal-img"
           src={currentBanner.src}
           alt={currentBanner.title}
           style={{
@@ -1046,6 +1049,7 @@ function LightboxModal({ activeLightbox, onClose }) {
         {/* PROMINENT RIGHT ARROW BUTTON */}
         <button
           type="button"
+          className="lightbox-nav-btn lightbox-next-btn"
           onClick={() => setSlideIdx((prev) => (prev === 0 ? 1 : 0))}
           aria-label="Next slide (Right Arrow)"
           title="Next slide (Right Arrow)"
@@ -1351,7 +1355,7 @@ export default function Products({ lenisRef: _lenisRef } = {}) {
 
         {/* Custom Architecture Enterprise Banner */}
         <div
-          className="glass-card"
+          className="glass-card products-enterprise-banner"
           style={{
             padding: "32px 36px",
             borderRadius: "var(--radius-xl)",

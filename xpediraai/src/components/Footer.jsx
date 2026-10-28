@@ -361,7 +361,7 @@ export default function Footer({ lenisRef }) {
           className="footer-big-text"
           style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(2.5rem, 9.5vw, 7.5rem)',
+            fontSize: 'clamp(1.85rem, 8.5vw, 7.5rem)',
             fontWeight: 800,
             letterSpacing: '0.04em',
             textAlign: 'center',
