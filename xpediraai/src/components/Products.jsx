@@ -24,6 +24,7 @@ gsap.registerPlugin(ScrollTrigger);
  * Flagship Products Data
  */
 const PRODUCTS_DATA = [
+  /*
   {
     id: "01",
     name: "Jagnath LIMS",
@@ -68,6 +69,54 @@ const PRODUCTS_DATA = [
       contact: "#contact",
       github: "https://github.com/SarvaiyaPrashant2242005/Jagnath_Labs",
       labelDemo: "Live Demo",
+      labelContact: "Contact Us",
+    },
+  },
+  */
+  {
+    id: "01",
+    name: "FreightFlow ERP",
+    tagline: "Next-Generation Freight ERP for Frictionless Global Trade",
+    category: "Web App · Freight & Logistics ERP",
+    badge: "ODEX & ICEGATE Integrated",
+    status: "Live",
+    logo: "/products/freightflow-logo.png",
+    banners: [
+      {
+        id: "freightflow-b1",
+        src: "/products/freightflow-banner-1.png",
+        title: "Export Operations & Satellite Radar",
+        caption: "Automated quotation costing, ICEGATE customs sync & AIS radar tracking",
+        tag: "01 Live Radar",
+      },
+      {
+        id: "freightflow-b2",
+        src: "/products/freightflow-banner-2.png",
+        title: "Bill of Lading & Multi-Tenant Architecture",
+        caption: "End-to-end BL lifecycle, inland dispatch & 23+ core master ledgers",
+        tag: "02 Enterprise ERP",
+      },
+    ],
+    shortDescription:
+      "Enterprise logistics ERP that automates end-to-end export operations—from shipping inquiries and dynamic costing to ICEGATE customs clearance, bill of lading lifecycle, and satellite container tracking.",
+    keyMetrics: [
+      { value: "150+", label: "Trade Lanes" },
+      { value: "Zero", label: "Customs Friction" },
+      { value: "4-Source", label: "Satellite Radar" },
+      { value: "Real-Time", label: "ODEX & ICEGATE" },
+    ],
+    features: [
+      "ODEX & ICEGATE Customs Automation (Instant LEO & Form 13)",
+      "Multi-Source Vessel & Container Radar (Carrier, Port & AIS)",
+      "Complete Bill of Lading (BL) Lifecycle & Dynamic Margin Engine",
+    ],
+    technologies: ["React 19", "Node.js", "Express 5", "PostgreSQL", "Sequelize", "Docker"],
+    targetUsers: "Customs Brokers, Ocean Forwarders & Multimodal 3PL Logistics Providers",
+    links: {
+      demo: "#contact",
+      contact: "#contact",
+      github: "https://github.com/xpediraai/FreightFlow-ERP",
+      labelDemo: "Explore Platform",
       labelContact: "Contact Us",
     },
   },
@@ -122,7 +171,7 @@ const PRODUCTS_DATA = [
 
 const CATEGORIES = [
   "All Products",
-  "Web App · LIMS & ERP",
+  "Web App · Freight & Logistics ERP",
   "Mobile App · GPS Utility",
 ];
 
